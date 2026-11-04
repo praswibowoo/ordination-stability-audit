@@ -1,0 +1,22 @@
+# P1 Family-PCA run configuration — code reads these keys; no hardcoded paths
+# Phase-4 FREEZE (P1-4.5, 2026-10-02): paths now point at the audited Phase-2 artifacts;
+# data_version + sha256 pins guard against silent input changes (Analysis_Design pre-reg §3).
+data_version: v2          # Phase-2 corpus build (135 original + 3 substitutes D90); frozen at G1 (D95/D96/D97)
+data_version_note: "sha256 of the three core matrices are recorded in results/phase4_baseline.json; mismatch = hard stop on any experiment run"
+
+matrix_presence: docs/extraction/stageA/matrix_presence_v2.csv
+matrix_values:   docs/extraction/stageB/matrix_values_v2.csv
+family_map:      docs/family_map.csv
+
+sha256:
+  matrix_presence: 269cfe7e037e4b72   # first 16 hex of full sha; verify EXTENDED_FIRST_16
+  matrix_values:   183d976b45a21759
+  family_map:      282df96f10ab3853
+
+seed: 42                 # CONTRIBUTING rule 1: all randomness fixed
+n_papers: 138
+scope_rows: 593
+knn_k: 5
+bootstrap_n: 1000
+output_dir: results
+figure_dir: figures

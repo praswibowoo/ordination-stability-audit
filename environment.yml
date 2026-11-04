@@ -1,0 +1,17 @@
+# Exact pins frozen at Phase 4 task P1-4.5 (2026-10-02 runtime lock — see results/phase4_baseline.json)
+# Runtimes verified in-place; conda env recreated with these pins reproduces the freeze.
+# Results-producing environment (Phase 3 / Phase 8): Python 3.13.7; see results/env_versions.json.
+# The python field in phase4_baseline.json records the historical Phase-4 freeze (3.14.5), not this env.
+name: p1-familypca
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13.7
+  - numpy=2.4
+  - pandas=3.0
+  - scipy=1.17
+  - scikit-learn=1.9
+  - matplotlib=3.11
+  - seaborn=0.13
+  - pytest
+  - jupyterlab
