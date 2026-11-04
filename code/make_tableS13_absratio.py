@@ -125,7 +125,7 @@ def main():
             # sub-tau median at_floor/reportable=0, but the paper withholds a
             # ratio only when the denominator is double-precision residue: the
             # three 3-parameter families in 3-D PCA (delta ~ 1e-17, ratio
-            # ~ 1e13 -- the same degeneracy criterion the random-suite
+            # ~ 1e13 -- the same degeneracy criterion the random-family
             # benchmark applies at 1e-16). A small-but-real median (F6 2-D,
             # 4.9e-9, with the tail analysis of Table S9) is REPORTED with the
             # floor caveat, exactly as Table 3 and Section 3.4 do; the tau rule
@@ -157,7 +157,7 @@ def main():
             "\\textbf{withheld} only when the family median is double-precision residue "
             "($\\delta_{\\mathrm{fam}} < 10^{-15}$ — the three 3-parameter families in 3-D PCA, "
             "whose $\\sim 10^{13}$ ratios are machine-precision denominators, the same degeneracy "
-            "criterion the random-suite benchmark applies at $10^{-16}$). A median between "
+            "criterion the random-family benchmark applies at $10^{-16}$). A median between "
             "$10^{-15}$ and the noise floor $\\tau = 10^{-6}$ (F6 aeration in 2-D presence PCA, "
             "$4.90 \\times 10^{-9}$, and in 2-D MDS, $5.34 \\times 10^{-7}$) is "
             "\\textbf{reported with an at-floor flag}, because the tail "

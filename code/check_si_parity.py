@@ -2,11 +2,12 @@
 """check_si_parity.py — submission SI must contain the same floats as the canonical SI.
 
 The submitted supplement (`supplementary_main.tex`) is a floats-only extract of
-the canonical prose supplement (`supplementary_rev2.tex`). Captions are
-deliberately shortened for submission, so this check compares the ordered list
-of float labels, not caption text. It catches the failure mode that produced
-the S1-S7 / S8 mismatch: a float added to the canonical SI but not to the
-submission extract (or vice versa).
+the historical prose supplement (`supplementary_rev2.tex`). That prose file is
+marked SUPERSEDED and must not be submitted; it is retained only as the float
+label and S19 reference. Captions are deliberately shortened for submission, so
+this check compares the ordered list of float labels, not caption text. It
+catches the failure mode that produced the S1-S7 / S8 mismatch: a float added
+to the reference SI but not to the submission extract (or vice versa).
 
 It also checks Table S19 against `results/family_tier_sensitivity.csv`, because
 that float is hand-copied from a generated Markdown table and has no other
@@ -22,6 +23,8 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Historical prose SI: explicitly SUPERSEDED, used only as a float-label and
+# S19 reference. Do not treat it as the submission source.
 CANON = os.path.join(ROOT, "manuscript/latex/supplementary_rev2.tex")
 SUBMISSION = os.path.join(ROOT, "manuscript/latex/supplementary_main.tex")
 

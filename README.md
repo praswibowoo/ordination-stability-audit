@@ -5,9 +5,11 @@ paper-level protocol for sparse ecological meta-matrices*.
 
 This repository is the **core code** of the audit: the reusable diagnostic, the
 R1 drift anchor, the R2 per-event calibration, the SDR estimators, and the
-verification gates. It is **not** the full reproduction bundle. The data layers,
-working documents, generated results, and manuscript tables ship in the Zenodo
-archives (see *Full reproduction* below).
+verification gates. It also carries the Stage-A presence-verification sheet
+(`docs/verification/`) so the 39-paper audit in Table S14 can be checked. It is
+**not** the full reproduction bundle. The data layers, working documents,
+generated results, and manuscript tables ship in the Zenodo archives (see
+*Full reproduction* below).
 
 ## What it does
 
@@ -54,11 +56,12 @@ make reproduce      # full pipeline (~2.5 h)
 
 - **Data record (CC BY 4.0):** https://doi.org/10.5281/zenodo.23552335
   (concept DOI https://doi.org/10.5281/zenodo.23552334)
-- **Code (MIT):** this repository, tag `code-v1.2`.
+- **Code (MIT):** this repository, tag `code-v1.3`.
 
-The code bundle contains the 182 input files, the generated results, and the
+The code bundle contains the 184 input files, the generated results, and the
 figures, so `make reproduce` runs unmodified. This repository is the readable
-core of that bundle.
+core of that bundle. The Stage-A presence-verification sheet and its result log
+are in `docs/verification/`.
 
 ## Reproducibility note
 

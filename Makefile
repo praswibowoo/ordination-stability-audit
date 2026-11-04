@@ -293,7 +293,7 @@ selftest:
 # `corrections` carries the correction-suite experiments (block permutation,
 # churn correction, the sensitivity families, the benchmarks); the figure and
 # table builders read their outputs, so the chain must run both.
-reproduce: stage-layers figures sdr-paper-weighted sdr-hierarchical r1-anchor corrections absratio-variants mdsstress familyexpansion family-tiers family-tier-sensitivity verdict-power rho-bootstrap block-null power-extension robustness-weighting extraction-sensitivity family-search fig4 figD figS13 figS14 figs-built tables vraw-scale f1-taxonomy tableS13 tableM verdict-replay tableS14 provenance-agreement density-baseline composition check style dups wordcount
+reproduce: stage-layers figures sdr-paper-weighted sdr-hierarchical p2-3d r1-anchor corrections absratio-variants mdsstress familyexpansion family-tiers family-tier-sensitivity verdict-power rho-bootstrap block-null power-extension robustness-weighting extraction-sensitivity family-search fig4 figD figS13 figS14 figs-built tables vraw-scale f1-taxonomy tableS13 tableM verdict-replay tableS14 provenance-agreement density-baseline composition check style dups wordcount
 	@echo "[make] REPRODUCE complete - layers -> figures -> tables -> gates"
 
 recompute: figures fig4
@@ -425,6 +425,12 @@ sdr-paper-weighted:
 
 sdr-hierarchical:
 	$(PY) code/sdr_hierarchical.py
+
+# Three-component sensitivity for the main SDR. Uses the presence density
+# (rho_v) for the value layer; the old script used the mean z-score, which is
+# not a density and produced the wrong 3-D value-layer SDR.
+p2-3d:
+	$(PY) code/p2_3d_sdr.py
 
 paper-stats: r1-anchor sdr-paper-weighted
 	@echo "[paper-stats] R1 anchor and per-event SDR reproduced"

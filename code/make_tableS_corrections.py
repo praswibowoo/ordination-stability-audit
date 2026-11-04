@@ -26,6 +26,7 @@ import scipy.stats as stats
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESULTS = os.path.join(ROOT, "results")
 TABLES = os.path.join(ROOT, "manuscript", "tables")
+SCRATCH = os.path.join(ROOT, "scratch")
 
 VARIANT_ORDER = ["pca_pres", "pca_vraw", "pca_vstd", "mds_pres", "tsne_pres"]
 
@@ -50,8 +51,9 @@ def read_csv(name):
         return list(csv.DictReader(fh))
 
 
-def write_md(name, title, header, rows, note):
-    path = os.path.join(TABLES, name)
+def write_md(name, title, header, rows, note, out_dir=None):
+    path = os.path.join(out_dir or TABLES, name)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     lines = [f"# {title}", "", "| " + " | ".join(header) + " |",
              "|" + "---|" * len(header)]
     for r in rows:
@@ -98,7 +100,7 @@ def table_s1():
              "Table S1 — Alternative-assignment and subspace sensitivities for the ratio gain",
              ["Sensitivity", "Cluster / Family", "Members", "Pairs", "Gain $G$", "$P(G \\le 0)$"],
              rows,
-             "pca3d = drift in the leading three-component subspace; ward_k3/k5 = raw Ward/Jaccard cluster families at cuts $k = 3$ and $k = 5$ under the same-rows paired design; $P$ = one-sided deletion-event bootstrap probability for $G \\le 0$. The F6 pca3d row is the top-3-PC sensitivity that does not reproduce the gain. Clusters with fewer than 10 complete rows or 3 members (e.g. W3C2, W5C2) are excluded by the size filter (main paper's family-derivation subsection). W5C4 is a distinct 6-parameter grouping (DO, pH, Temperature, COD, BOD, TSS), not a direct replication of the 3-parameter F6 suite, and pca3d membership comes from the family definitions. W5C3 shares parameters with F1 physical (DO, pH, Salinity, Temperature) yet reports the opposite sign of $G$ (+0.174 over 22 deletion events versus $-0.834$ over 121) because Ward-cluster rows condition on complete-cluster rows and family rows on cover rows, so the two must not be read against each other.")
+             "pca3d = drift in the leading three-component subspace; ward_k3/k5 = raw Ward/Jaccard cluster families at cuts $k = 3$ and $k = 5$ under the same-rows paired design; $P$ = one-sided deletion-event bootstrap probability for $G \\le 0$. The F6 pca3d row is the top-3-PC sensitivity that does not reproduce the gain. Clusters with fewer than 10 complete rows or 3 members (e.g. W3C2, W5C2) are excluded by the size filter (main paper's family-derivation subsection). W5C4 is a distinct 6-parameter grouping (DO, pH, Temperature, COD, BOD, TSS), not a direct replication of the 3-parameter F6 family, and pca3d membership comes from the family definitions. W5C3 shares parameters with F1 physical (DO, pH, Salinity, Temperature) yet reports the opposite sign of $G$ (+0.174 over 22 deletion events versus $-0.834$ over 121) because Ward-cluster rows condition on complete-cluster rows and family rows on cover rows, so the two must not be read against each other.")
 
 
 def table_s2():
@@ -183,7 +185,8 @@ def table_s3():
              "$p_{\\mathrm{block}} = 0.920$), salinity accounts for "
              f"{vraw_share:.2f}% of sample variance due to "
              "unscaled measurement units, pinning the leading axis so that deletion produces near-zero "
-             "rotational drift (mean drift $1.3 \\times 10^{-6}$).")
+             "rotational drift (mean drift $1.3 \\times 10^{-6}$).",
+             out_dir=SCRATCH)
 
 
 def table_s4():
@@ -470,6 +473,11 @@ def table_s6():
                      f"{pb:.3f} $\\pm$ {(pb*(1-pb)/nn)**0.5:.3f}"])
     p020 = agg[(0.8, 0.2)][1] / agg[(0.8, 0.2)][2]
     p060 = agg[(0.8, 0.6)][1] / agg[(0.8, 0.6)][2]
+    p100 = agg_ext[(0.8, 1.0)][1] / agg_ext[(0.8, 1.0)][2]
+    p150 = agg_ext[(0.8, 1.5)][1] / agg_ext[(0.8, 1.5)][2]
+    p200 = agg_ext[(0.8, 2.0)][1] / agg_ext[(0.8, 2.0)][2]
+    nominal = [agg[(sig, 0.0)][1] / agg[(sig, 0.0)][2]
+               for sig in (0.0, 0.2, 0.5, 0.8)]
     delta_rho = _paper_density_iqr()
     c20, c60 = _contrast_pct(0.20, delta_rho), _contrast_pct(0.60, delta_rho)
 
@@ -513,9 +521,9 @@ def table_s6():
         "Paper-level power is low across the whole swept range: rejection is "
         f"{p020:.3f} at $\\gamma = 0.20$ and {p060:.3f} at $\\gamma = 0.60$ ({c60:.2f}% contrast), and "
         "no swept setting attains 80% power. At $\\gamma$ = 1.0, 1.5 and 2.0 (10.1%, 15.5% and 21.2%), "
-        "paper-level power is 0.178, 0.226 and 0.396. Row-level inflation is graded in clustering strength "
+        f"paper-level power is {p100:.3f}, {p150:.3f} and {p200:.3f}. Row-level inflation is graded in clustering strength "
         "(0.049, 0.118, 0.196, 0.256 at $\\sigma = 0, 0.2, 0.5, 0.8$) while the paper-level test stays "
-        "at nominal (0.054, 0.037, 0.028, 0.053). S2 = random-family control; S3 = "
+        f"at nominal ({nominal[0]:.3f}, {nominal[1]:.3f}, {nominal[2]:.3f}, {nominal[3]:.3f}). S2 = random-family control; S3 = "
         "configuration-matched view (100 random 3-parameter families matching the F6 400--900-row "
         "span, counting exceedances of the observed F6 gain +0.963). In S2 and S3 the exceeding family is "
         "pH + TDS + Oil and Grease ($G = +0.989$, five presence configurations). One-sided $p$ uses "
@@ -582,7 +590,7 @@ def table_s8():
              "Table S8 — Absolute drift and drift reduction ratios for all seven families (presence PCA, 2-D)",
              ["Family", "All $\\delta$", "Family $\\delta$", "Raw ratio", "Paired ratio (med)", "Unique-cfg ratio"],
              rows,
-             "Medians across leave-one-paper-out events for presence PCA (2-D subspace). Raw ratio = median($\\delta_{\\mathrm{all}}$) / median($\\delta_{\\mathrm{fam}}$); paired ratio = median of per-event $\\delta_{\\mathrm{all}} / \\delta_{\\mathrm{fam}}$; unique-cfg ratio = median($\\delta_{\\mathrm{all}}$) / median($\\delta_{\\mathrm{fam,cfg}}$) with unique binary configurations weighted equally. Drift is scale-free on unit Frobenius norm clouds. Against 100 random 3-parameter suites (Table S6), F6's raw drift ratio (60,900) is exceeded by 19 of 100 suites ($p = 0.198$), but 87 of the 100 have median family drift below $\\tau = 10^{-6}$ and sit at the same coordinate floor. Above $\\tau$, 0 of 13 exceed ($p = 0.071$); at $10^{-9}$, 2 of 83 exceed ($p = 0.036$), so the benchmark is threshold-sensitive. On ratio gain $G$, only 1 of 100 random suites exceeds F6 ($p = 0.020$; $p = 0.043$ density-restricted). Extreme drift reduction is an arithmetic consequence of the discrete binary configuration space, not unique ecological coupling.")
+             "Medians across leave-one-paper-out events for presence PCA (2-D subspace). Raw ratio = median($\\delta_{\\mathrm{all}}$) / median($\\delta_{\\mathrm{fam}}$); paired ratio = median of per-event $\\delta_{\\mathrm{all}} / \\delta_{\\mathrm{fam}}$; unique-cfg ratio = median($\\delta_{\\mathrm{all}}$) / median($\\delta_{\\mathrm{fam,cfg}}$) with unique binary configurations weighted equally. Drift is scale-free on unit Frobenius norm clouds. Against 100 random 3-parameter families (Table S6), F6's raw drift ratio (60,900) is exceeded by 19 of 100 families ($p = 0.198$), but 87 of the 100 have median family drift below $\\tau = 10^{-6}$ and sit at the same coordinate floor. Above $\\tau$, 0 of 13 exceed ($p = 0.071$); at $10^{-9}$, 2 of 83 exceed ($p = 0.036$), so the benchmark is threshold-sensitive. On ratio gain $G$, only 1 of 100 random families exceeds F6 ($p = 0.020$; $p = 0.043$ density-restricted). Extreme drift reduction is an arithmetic consequence of the discrete binary configuration space, not unique ecological coupling.")
 
 
 def table_s9():

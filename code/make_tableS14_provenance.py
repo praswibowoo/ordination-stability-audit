@@ -157,6 +157,25 @@ def main():
             base["family_complete_cells"]) == (2705, 7, 40, 3305), base
     assert 138 - 122 == 16, "ILL-pending count broken"
 
+    # ---- Stage-A presence verification (30% paper sample) ----
+    stagea = read_csv("docs/verification/stageA_verification_sheet.csv")
+    stagea_papers = len(stagea)
+    stagea_claims = 0
+    stagea_ok = 0
+    for r in stagea:
+        for j in (1, 2, 3):
+            v = r[f"claim{j}_OK (Y/N)"].strip()
+            if v in ("Y", "N"):
+                stagea_claims += 1
+                stagea_ok += int(v == "Y")
+    stagea_misses = stagea_claims - stagea_ok
+    assert (stagea_papers, stagea_claims, stagea_ok) == (39, 117, 104)
+    stagea_pct = round(100.0 * stagea_papers / nums["qualified"], 1)
+    stagea_ok_pct = round(100.0 * stagea_ok / stagea_claims, 1)
+    trace_papers = len({r["batch_id"] for r in trace})
+    assert trace_papers == 49
+    trace_paper_pct = round(100.0 * trace_papers / (base["n_papers"] - 16), 1)
+
     pct_pdf = nums["pdf_at_close"] * 100 // nums["qualified"]
     trace_pct = round(100.0 * 100 / base["filled_cells"], 1)
 
@@ -216,10 +235,17 @@ def main():
          f"Conversions only via the released unit-conversion rules (U-series); "
          f"every conversion stamps its rule ID; {n_conv} logged conversions.",
          f"{TT}{{unit\\_conversion\\_log.csv}}"],
+        ["Presence verification (Stage A)",
+         f"A stratified {stagea_pct}\\% paper sample verified {stagea_papers} of "
+         f"{nums['qualified']} qualified papers ({stagea_claims} claims, three per paper): "
+         f"{stagea_ok}/{stagea_claims} ({stagea_ok_pct}\\%) present before adjudication, "
+         f"below the 95\\% protocol gate; all {stagea_misses} over-marked cells corrected.",
+         f"{TT}{{stageA\\_verification\\_sheet.csv}}; {TT}{{stageA\\_verification\\_results.md}}"],
         ["Extraction verification",
          f"Stratified 100-cell verification trace: {hits}/100 values found verbatim in the "
          f"source text; the {len(misses)} misses are image-table paper B076, provenance closed "
-         f"via rendered-page OCR in the extraction ledger; trace covers {trace_pct}\\% of the "
+         f"via rendered-page OCR in the extraction ledger; the trace covers {trace_papers} of "
+         f"{base['n_papers'] - 16} papers ({trace_paper_pct}\\%) and {trace_pct}\\% of the "
          f"2,658 numeric cells.",
          f"{TT}{{verification\\_trace.csv}} (asserted)"],
         ["Independent re-parse",
