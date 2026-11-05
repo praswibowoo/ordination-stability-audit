@@ -36,7 +36,7 @@ import tempfile
 import zipfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VERSION = os.environ.get("CODE_RELEASE_VERSION", "v1.1")
+VERSION = os.environ.get("CODE_RELEASE_VERSION", "v1.4")
 DEFAULT_BUNDLE = os.path.join(ROOT, "release", f"p1_family_pca_code_{VERSION}")
 ZIP = os.path.join(ROOT, "release", "zenodo_deposition", f"p1_family_pca_code_{VERSION}.zip")
 PREFIX = f"p1_family_pca_code_{VERSION}"

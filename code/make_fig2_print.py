@@ -99,7 +99,7 @@ def panel_a():
     ax.legend(fontsize=6.8, markerscale=3, loc="upper center",
               bbox_to_anchor=(0.5, -0.20), ncol=2, frameon=False,
               handletextpad=0.4, columnspacing=1.0)
-    ax.set_title("(a) drift vs row density — plotted variants (LOPO; binned medians; shaded = $\\rho$ IQR)",
+    ax.set_title("(a) drift vs row density — plotted variants (LOPO; binned medians; dotted = $\\rho$ IQR)",
                  fontsize=8.2, pad=5)
     fig.tight_layout(pad=0.4)
     fig.savefig(os.path.join(FIGS, "fig2_a.png"), dpi=DPI, bbox_inches="tight")
