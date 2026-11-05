@@ -56,7 +56,7 @@ make reproduce      # full pipeline (~2.5 h)
 
 - **Data record (CC BY 4.0):** https://doi.org/10.5281/zenodo.23552335
   (concept DOI https://doi.org/10.5281/zenodo.23552334)
-- **Code (MIT):** this repository, tag `code-v1.5`.
+- **Code (MIT):** this repository.
 
 The code bundle contains the 188 input files (plus the archive manifest), the generated results, and the
 figures, so `make reproduce` runs unmodified. This repository is the readable

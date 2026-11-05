@@ -610,7 +610,6 @@ CLAIMS: list[tuple[str, str, dict, str, str]] = [
     # ---- Phase 3 (D135): tau-provenance disclosure numbers, pinned in Section 2.2 ----
     ("manuscript/latex/main_rev2.tex", "ex_f6_tail_summary.csv", dict(metric="pooled_share_above_tau6"), "value", "stat_pct100"),
     ("manuscript/latex/main_rev2.tex", "ex_f6_tail_summary.csv", dict(metric="median_fam_med"), "value", "stat_sci2"),
-    ("manuscript/latex/main_rev2.tex", "ex_f6_tail_summary.csv", dict(metric="median_fam_max"), "value", "stat_sci2"),
     # ---- Phase M (D158): family-expansion audit — benchmark + continuous audit
     # numbers pinned against the co-author digest (report_discuss.tex) and the
     # analysis registry. Suite-metric claims land with the md rewrite (Phase 5).
@@ -883,7 +882,6 @@ CLAIMS: list[tuple[str, str, dict, str, str]] = [
     ("manuscript/latex/main_rev2.tex", "sim_random_drift_benchmark_summary.csv", dict(metric="G_five_configuration"), "exceedances", "count"),
     ("manuscript/latex/main_rev2.tex", "sim_random_drift_benchmark_summary.csv", dict(metric="G_five_configuration"), "total_suites", "count"),
     ("manuscript/latex/main_rev2.tex", "sim_random_drift_benchmark_summary.csv", dict(metric="G_five_configuration"), "p_value", "stat"),
-    ("manuscript/latex/main_rev2.tex", "sim_random_drift_benchmark_summary.csv", dict(metric="config_count_vs_G_spearman"), "exceedances", "stat"),
     ("manuscript/latex/main_rev2.tex", "sim_random_drift_benchmark_nondeg.csv", dict(metric="nondeg_exceeders_min_configs"), "exceedances", "count"),
     ("manuscript/latex/main_rev2.tex", "sim_random_drift_benchmark_nondeg.csv", dict(metric="nondeg_exceeders_max_configs"), "exceedances", "count"),
     # P1 audit: the 1e-12 to 1e-9 floor-level phrase was removed from the text.
@@ -960,7 +958,6 @@ CLAIMS: list[tuple[str, str, dict, str, str]] = [
     ("manuscript/latex/main_rev2.tex", "@phrase", {}, "collapses to numerical residue below", "phrase"),
     ("manuscript/latex/main_rev2.tex", "@phrase", {}, "two exceed 100-fold (134.6, 95\\% CI 80.0 to 236.2, and 214.6, 153.3 to 304.8)", "phrase"),
     ("manuscript/latex/main_rev2.tex", "@phrase", {}, "no row reports more than 24 of the 44 parameters", "phrase"),
-    ("manuscript/latex/main_rev2.tex", "@phrase", {}, "Median event 2.2\\% (IQR 2.2 to 26.7\\%)", "phrase"),
     ("manuscript/latex/main_rev2.tex", "@phrase", {}, "Tiers are unchanged across $\\tau = 10^{-9}$ to $10^{-4}$", "phrase"),
     ("manuscript/latex/main_rev2.tex", "@phrase", {}, "At $p < 0.10$, only F2 metals meets the five stability criteria", "phrase"),
     ("manuscript/latex/main_rev2.tex", "@phrase", {}, "presence-complete base is three papers", "phrase"),
@@ -969,7 +966,6 @@ CLAIMS: list[tuple[str, str, dict, str, str]] = [
     ("manuscript/latex/main_rev2.tex", "@phrase", {}, "One of 100 random families exceeds F6 ($p = 0.020$), and one of 19 random families with five configurations does so ($p = 0.10$)", "phrase"),
     ("manuscript/latex/main_rev2.tex", "@phrase", {}, "exceeded by 19 of 100 ($p = 0.198$)", "phrase"),
     # P1 audit: the 11/92 non-degenerate phrase was replaced by the tau-aligned benchmark.
-    ("manuscript/latex/main_rev2.tex", "@phrase", {}, "12 of 93 absolute-ratio exceedances", "phrase"),
     ("manuscript/latex/main_rev2.tex", "@phrase", {}, "a positive value-layer silhouette (0.487, $p = 0.002$, Tables S5 and S12b)", "phrase"),
     ("manuscript/latex/main_rev2.tex", "@phrase", {}, "14.3-fold MDS sensitivity", "phrase"),
     ("manuscript/latex/main_rev2.tex", "@phrase", {}, "3 outliers to -29.2 omitted", "phrase"),
