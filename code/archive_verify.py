@@ -33,7 +33,7 @@ import zipfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ZIPDIR = os.path.join(ROOT, "release", "zenodo_deposition")
-VERSION = os.environ.get("CODE_RELEASE_VERSION", "v1.4")
+VERSION = os.environ.get("CODE_RELEASE_VERSION", "v1.5")
 DATA_VERSION = os.environ.get("DATA_RELEASE_VERSION", "v1.1")
 CODE_ZIP = os.path.join(ZIPDIR, f"p1_family_pca_code_{VERSION}.zip")
 DATA_ZIP = os.path.join(ZIPDIR, f"p1_family_pca_data_{DATA_VERSION}.zip")

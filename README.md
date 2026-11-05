@@ -56,9 +56,9 @@ make reproduce      # full pipeline (~2.5 h)
 
 - **Data record (CC BY 4.0):** https://doi.org/10.5281/zenodo.23552335
   (concept DOI https://doi.org/10.5281/zenodo.23552334)
-- **Code (MIT):** this repository, tag `code-v1.4`.
+- **Code (MIT):** this repository, tag `code-v1.5`.
 
-The code bundle contains the 183 input files (plus the archive manifest), the generated results, and the
+The code bundle contains the 188 input files (plus the archive manifest), the generated results, and the
 figures, so `make reproduce` runs unmodified. This repository is the readable
 core of that bundle. The Stage-A presence-verification sheet and its result log
 are in `docs/verification/`.

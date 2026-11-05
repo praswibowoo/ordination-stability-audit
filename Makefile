@@ -18,7 +18,7 @@ FIG_DPI ?= 600
         fig2-print fig3-print fig5-print si-panels fig7-replay figS13 figS14 duplicates radius \
         churn-pattern f6-tail f6-completeness sim-benchmark absratio-variants tableS13 tableS14 \
         block-null power-extension robustness-weighting extraction-sensitivity family-search verdict-power family-tier-sensitivity \
-        provenance-agreement density-baseline familyexpansion familyinvestigation tableM wordcount seed-baseline mds-classical-check mds-scope-audit r1-anchor r2-calibration sdr-paper-weighted sdr-hierarchical paper-stats
+        provenance-agreement density-baseline familyexpansion familyinvestigation tableM wordcount seed-baseline mds-classical-check mds-scope-audit r1-anchor r2-calibration sdr-paper-weighted sdr-hierarchical paper-stats decision-consequences structural-generality block-diagnostics
 
 # NOTE: `all` rebuilds submission artifacts from frozen layers: baseline gate ->
 # selftest -> all figures -> supplementary tables -> numbers check.
@@ -434,6 +434,15 @@ p2-3d:
 
 paper-stats: r1-anchor sdr-paper-weighted
 	@echo "[paper-stats] R1 anchor and per-event SDR reproduced"
+
+decision-consequences:
+	$(PY) code/decision_consequences.py
+
+structural-generality:
+	$(PY) code/experiment_structural_generality.py --reps 3
+
+block-diagnostics:
+	$(PY) code/block_model_diagnostics.py
 
 r2-calibration:
 	$(PY) code/r2_per_event_calibration.py --rep 300 --events 30 --perm 199

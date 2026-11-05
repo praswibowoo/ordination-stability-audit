@@ -113,22 +113,19 @@ def panel_b():
     si = [np.nan if v == "pca_vraw" else float(recs[v]["event_paper_sdr"]) for v in ORDER]
     ci_lo = [np.nan if v == "pca_vraw" else float(recs[v]["event_paper_ci_lo"]) for v in ORDER]
     ci_hi = [np.nan if v == "pca_vraw" else float(recs[v]["event_paper_ci_hi"]) for v in ORDER]
-    pb = [float(recs[v]["event_paper_p"]) for v in ORDER]
     fig, ax = plt.subplots(figsize=(2.7, 2.5))
     ax.bar(range(len(ORDER)), si,
-           color=["#b0bec5" if v == "pca_vraw" else
-                  ("#1b4f72" if p < 0.05 else "#7fa6c9") for v, p in zip(ORDER, pb)],
+           color=["#b0bec5" if v == "pca_vraw" else "#1b4f72" for v in ORDER],
            width=0.65)
     err_lo = [s - l if not np.isnan(s) else 0 for s, l in zip(si, ci_lo)]
     err_hi = [h - s if not np.isnan(s) else 0 for s, h in zip(si, ci_hi)]
     ax.errorbar(range(len(ORDER)), si, yerr=[err_lo, err_hi], fmt="none",
                 ecolor="#263238", elinewidth=1.0, capsize=2.5, capthick=0.9)
-    # p-values live in the tick labels: no vertical labels to collide with the
-    # bars, the dashed neutral line, or the panel title.
+    # The per-event test does not control size, so the figure reports the
+    # descriptive estimate and interval without a p-value.
     ax.axhline(1.0, ls="--", c="crimson", lw=0.9, zorder=0)
     ax.set_xticks(range(len(ORDER)))
-    tick = ["PCA\npres\np=1.000", "PCA\nraw\nn/a",
-            "PCA\nstd\np=0.001", "t-SNE\npres\np=1.000"]
+    tick = ["PCA\npres", "PCA\nraw\nn/a", "PCA\nstd", "t-SNE\npres"]
     ax.set_xticklabels(tick, fontsize=6.6)
     ax.set_ylabel("Sparsity drift ratio SDR (LOPO)", fontsize=8)
     ax.set_ylim(0, 1.95)
