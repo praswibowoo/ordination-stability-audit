@@ -73,7 +73,6 @@ def panel_a():
     fig, ax = plt.subplots(figsize=(5.4, 3.3))
     pr = data["pca_pres"][0]
     q1, q3 = np.quantile(pr, [0.25, 0.75])
-    ax.axvspan(q1, q3, color="#90a4ae", alpha=0.08, zorder=0)
     for v in ORDER:
         xs, ys = data[v]
         nz = ys > 0
@@ -85,7 +84,8 @@ def panel_a():
     ax.axvline(q1, ls=":", c="k", lw=1)
     ax.axvline(q3, ls=":", c="k", lw=1)
     ax.set_yscale("symlog", linthresh=1e-5)
-    ax.set_ylim(0, 3e-2)
+    ax.set_ylim(1e-5, 3e-2)
+    ax.set_yticks([1e-5, 1e-4, 1e-3, 1e-2])
     ax.set_xlabel("row density $\\rho$", fontsize=8)
     ax.set_ylabel("Procrustes drift $\\delta$ (LOPO)", fontsize=8)
     ax.tick_params(labelsize=7.5)

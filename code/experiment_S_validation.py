@@ -200,33 +200,40 @@ def fig7(cal, rand, f6_G, path):
     _nrep = len({r["rep"] for r in cal})
     fig = plt.figure(figsize=(5.6, 4.4))
     gs = fig.add_gridspec(2, 2, height_ratios=[1.0, 0.92], hspace=0.72, wspace=0.42)
-    ax = fig.add_subplot(gs[0, :])
+    def _bars(ax, keys, title, show_legend=False):
+        labels, rr, rb = [], [], []
+        for s_, g in keys:
+            s_, g = float(s_), float(g)
+            if g == 0 and s_ == 0:
+                labels.append("null")
+            elif s_ > 0 and g == 0:
+                labels.append(f"$\\sigma$={s_:g}")
+            else:
+                labels.append(f"$\\gamma$={g:g}")
+            sub = [r for r in cal
+                   if float(r["sigma_paper"]) == s_ and float(r["gamma"]) == g]
+            rr.append(np.mean([float(r["rej_row"]) for r in sub]))
+            rb.append(np.mean([float(r["rej_block"]) for r in sub]))
+        x = np.arange(len(keys))
+        ax.bar(x - 0.2, rr, 0.4, color="#c62828", label="row-level test")
+        ax.bar(x + 0.2, rb, 0.4, color="#1b4f72", label="paper-level test")
+        ax.axhline(0.05, ls="--", c="k", lw=0.8)
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, fontsize=7.2, rotation=35, ha="right")
+        ax.set_ylabel("rejection rate", fontsize=8.2, labelpad=6)
+        ax.tick_params(axis="y", labelsize=7.8)
+        ax.set_ylim(0, 0.45)
+        ax.set_title(title, fontsize=8.2, pad=7)
+        if show_legend:
+            ax.legend(fontsize=7.2, loc="upper left", framealpha=0.92, handlelength=1.2)
+
     keys = sorted({(r["sigma_paper"], r["gamma"]) for r in cal})
-    labels, rr, rb = [], [], []
-    for s_, g in keys:
-        s_, g = float(s_), float(g)
-        if g == 0 and s_ == 0:
-            labels.append("null")
-        elif s_ > 0 and g == 0:
-            labels.append(f"$\\sigma$={s_:g}")
-        else:
-            labels.append(f"$\\gamma$={g:g}")
-        sub = [r for r in cal
-               if float(r["sigma_paper"]) == s_ and float(r["gamma"]) == g]
-        rr.append(np.mean([float(r["rej_row"]) for r in sub]))
-        rb.append(np.mean([float(r["rej_block"]) for r in sub]))
-    x = np.arange(len(keys))
-    ax.bar(x - 0.2, rr, 0.4, color="#c62828", label="row-level test")
-    ax.bar(x + 0.2, rb, 0.4, color="#1b4f72", label="paper-level test")
-    ax.axhline(0.05, ls="--", c="k", lw=0.8)
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=7.6, rotation=35, ha="right")
-    ax.set_ylabel("rejection rate ($\\alpha$ = 0.05)", fontsize=8.5, labelpad=7)
-    ax.tick_params(axis="y", labelsize=8)
-    ax.set_ylim(0, 0.45)  # row-level ceiling observed < 0.35
-    ax.set_title(f"(a) resampling-unit calibration\n(Monte Carlo SE $\\approx$ 0.015)",
-                 fontsize=8.5, pad=9)
-    ax.legend(fontsize=7.5, loc="upper left", framealpha=0.92, handlelength=1.3)
+    size_keys = [(s, g) for (s, g) in keys if float(g) == 0]
+    power_keys = [(s, g) for (s, g) in keys if float(g) > 0]
+    ax = fig.add_subplot(gs[0, 0])
+    _bars(ax, size_keys, "(a) size at $\\gamma$ = 0", True)
+    ax = fig.add_subplot(gs[0, 1])
+    _bars(ax, power_keys, "(b) power at $\\sigma$ = 0.8")
     ax = fig.add_subplot(gs[1, 0])
     gs_ = np.asarray([float(r["G"]) for r in rand])
     bins = np.linspace(-3.0, 1.2, 22)
@@ -238,7 +245,7 @@ def fig7(cal, rand, f6_G, path):
     ax.tick_params(labelsize=7.5)
     n_exceed = int(np.sum(gs_ >= f6_G))
     p_val = (1 + n_exceed) / (1 + len(gs_))
-    ax.set_title(f"(b) random-family null\n({n_exceed}/{len(gs_)} exceed; "
+    ax.set_title(f"(c) random-family null\n({n_exceed}/{len(gs_)} exceed; "
                  f"p = {p_val:.3f})",
                  fontsize=8, pad=4)
     ax.legend(fontsize=7, loc="upper left", framealpha=0.92, handlelength=1.3)
@@ -254,7 +261,7 @@ def fig7(cal, rand, f6_G, path):
     ax.set_ylabel("G", fontsize=8.2)
     ax.set_ylim(-3.2, 1.3)
     ax.tick_params(labelsize=7.5)
-    ax.set_title("(c) G vs family cover size", fontsize=8, pad=4)
+    ax.set_title("(d) G vs family cover size", fontsize=8, pad=4)
     ax.legend(fontsize=7, loc="lower left", framealpha=0.92, handlelength=1.3,
               markerscale=1.4)
     fig.savefig(path, dpi=600, bbox_inches="tight")
