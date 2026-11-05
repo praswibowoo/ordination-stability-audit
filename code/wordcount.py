@@ -50,7 +50,7 @@ def clean(body: str) -> str:
 def main() -> int:
     if not os.path.exists(os.path.join(ROOT, ABSTRACT)):
         print("[wordcount] SKIPPED — the manuscript sources are not part of this tree "
-              "(the public code archive ships no LaTeX manuscript)")
+              "(the public code mirror ships no LaTeX manuscript)")
         return 0
     text = open(ABSTRACT, encoding="utf-8").read()
     body = clean(extract_body(text))

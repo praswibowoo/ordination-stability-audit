@@ -68,15 +68,15 @@ python3 code/stability_diagnostic.py --help
 
 The individual analysis scripts read the staged extraction layers
 (`docs/extraction/stageA`, `docs/extraction/stageB`) and the generated result
-tables (`results/`). Those inputs are part of the full Zenodo bundle, not this
-core repository. With the bundle unpacked:
+tables (`results/`). The data layers are in the Zenodo data record; unpack it
+beside this repository, then run:
 
 ```
-make stage-layers   # place the released data layers at the expected paths
-make all            # fast rebuild: figures, tables, gates (~1 min)
-make paper-stats    # R1 anchor + per-event SDR (~1 min)
-make r2-calibration # per-event size/power calibration (~5 min)
-make reproduce      # full pipeline (~2.5 h)
+python3 code/stage_layers.py   # place the data layers at the expected paths
+make all                       # fast rebuild: figures, tables, gates (~1 min)
+make paper-stats               # R1 anchor + per-event SDR (~1 min)
+make r2-calibration            # per-event size/power calibration (~5 min)
+make reproduce                 # full pipeline (~2.5 h)
 ```
 
 ## Full reproduction
@@ -86,10 +86,10 @@ make reproduce      # full pipeline (~2.5 h)
   general corpus release, not a single-paper supplement.
 - **Code (MIT):** this repository.
 
-The code bundle contains the 188 input files (plus the archive manifest), the generated results, and the
-figures, so `make reproduce` runs unmodified. This repository is the readable
-core of that bundle. The Stage-A presence-verification sheet and its result log
-are in `docs/verification/`.
+The repository contains the analysis scripts, the generated result tables
+shipped with this code release, and the figure and table builders. The data
+record supplies the input layers. The Stage-A presence-verification sheet and
+its result log are in `docs/verification/`.
 
 ## Reproducibility note
 

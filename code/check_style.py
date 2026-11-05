@@ -64,7 +64,7 @@ def main() -> int:
     tex = args.main
     if not os.path.exists(os.path.join(ROOT, tex)):
         print(f"[style] SKIPPED — {tex} is not in this tree (the manuscript sources "
-              f"are not part of the public code archive)")
+              f"are not part of the public code mirror)")
         return 0
     raw = open(os.path.join(ROOT, tex), encoding="utf-8").read()
     a = raw.find(START)

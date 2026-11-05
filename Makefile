@@ -289,7 +289,7 @@ selftest:
 
 # Full reproduction from the released layers: the computation targets first
 # (the repo's daily `all` starts from committed outputs), then every figure,
-# table and gate. This is the command the code archive documents.
+# table and gate. This is the command the GitHub code documents.
 # `corrections` carries the correction-suite experiments (block permutation,
 # churn correction, the sensitivity families, the benchmarks); the figure and
 # table builders read their outputs, so the chain must run both.
@@ -393,20 +393,6 @@ check-a:
 
 check-a-style:
 	$(PY) code/check_style.py --main manuscript/latex/main_rev2a.tex
-
-# ---- D213: seconds-scale checks on the shipping code archive. The two-hour
-# `make reproduce` inside a fresh unpack stays the deposit gate; this gate
-# catches the defects that have actually reached the archive (a script the
-# Makefile invokes but the bundle omits, a target ordered before its producers,
-# a stale inventory, checksum or manifest).
-archive-preflight:
-	$(PY) code/archive_preflight.py
-
-# ---- D214: the two-hour reproduction, run in a scratch directory and recorded
-# in release/archive_verification.json, so a later session can tell which build a
-# run validated. `make archive-preflight` compares the current bundle with it.
-archive-verify:
-	$(PY) code/archive_verify.py --run
 
 si-refs:
 	$(PY) code/check_si_refs.py

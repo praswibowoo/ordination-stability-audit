@@ -1,6 +1,6 @@
-# EES rev3 result tables
+# EES result tables
 
-These tables accompany the EES revision of *Calibrating deletion stability in
+These tables accompany the EES manuscript *Calibrating deletion stability in
 pooled multivariate environmental data: a study-level resampling framework*.
 They are the outputs of the seven scripts listed in the repository README.
 

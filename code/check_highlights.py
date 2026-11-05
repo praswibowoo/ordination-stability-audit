@@ -9,7 +9,7 @@ the limit, or the character count in the record stops matching the sentence.
 Reads `manuscript/highlights.md` (a table with the bullet, its stated count, and its source),
 checks the count and the limit, and compares each bullet's characters against the number the
 file claims. Skips, rather than fails, when the manuscript sources are absent, which is the
-case inside the public code archive.
+case inside the public code mirror.
 
 Run: python3 code/check_highlights.py     (also part of `make check`)
 """
@@ -28,7 +28,7 @@ MIN, MAX = 3, 5
 def main() -> int:
     if not os.path.exists(PATH):
         print("[highlights] SKIPPED — the manuscript sources are not part of this tree "
-              "(the public code archive ships no LaTeX manuscript)")
+              "(the public code mirror ships no LaTeX manuscript)")
         return 0
 
     rows = []

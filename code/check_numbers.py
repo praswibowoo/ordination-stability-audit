@@ -2000,7 +2000,7 @@ def main() -> int:
                 triage_retargeted += 1
         if not doc.startswith("@") and not os.path.exists(os.path.join(ROOT, doc)):
             # the target document is not part of this tree (e.g. the co-author
-            # digest in the scoped code archive): its claims are skipped, not failed
+            # digest in the scoped code mirror): its claims are skipped, not failed
             skipped += 1
             missing_docs.add(doc)
             continue

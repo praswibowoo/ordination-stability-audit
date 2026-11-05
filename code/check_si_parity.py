@@ -11,7 +11,7 @@ to the reference SI but not to the submission extract (or vice versa).
 
 It also checks Table S19 against `results/family_tier_sensitivity.csv`, because
 that float is hand-copied from a generated Markdown table and has no other
-value gate. The check is skipped when the results layer is absent (code archive).
+value gate. The check is skipped when the results layer is absent (code mirror).
 
 Read-only. Exit 1 on any difference.
 """
@@ -76,7 +76,7 @@ def _row_cells(line: str) -> list[str]:
 
 def check_s19_values() -> list[str]:
     if not (os.path.exists(S19_CSV) and os.path.exists(CANON)):
-        return []  # code archive: no results layer / no manuscript
+        return []  # code mirror: no results layer / no manuscript
     text = open(CANON, encoding="utf-8").read()
     m = re.search(r"\\label\{tab:S19\}(.*?)\\end\{table\}", text, re.S)
     if not m:

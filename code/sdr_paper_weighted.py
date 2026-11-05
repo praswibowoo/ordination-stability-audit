@@ -50,7 +50,7 @@ def main() -> None:
         _rows += ".gz"
     rows = pd.read_csv(_rows, low_memory=False)
     # Read the staged extraction layers (stage-layers), not the release path:
-    # the code archive mirrors the data record but does not keep a v1.1 copy.
+    # the GitHub code mirrors the data record but does not keep a v1.1 copy.
     _, _, presence_paper, _, _, _, _ = load()
 
     out = []

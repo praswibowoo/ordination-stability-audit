@@ -93,7 +93,7 @@ def words(t):
 def measure(tex_path):
     if not os.path.exists(tex_path):
         print(f"[wordcount-body] SKIPPED — {tex_path} is not in this tree (the "
-              f"manuscript sources are not part of the public code archive)")
+              f"manuscript sources are not part of the public code mirror)")
         return 0
     raw = open(tex_path, encoding="utf-8").read()
     body = body_span(strip_frontmatter(raw))

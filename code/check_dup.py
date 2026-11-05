@@ -123,7 +123,7 @@ def main() -> int:
     args, _ = ap.parse_known_args()
     if not os.path.exists(os.path.join(ROOT, args.main)):
         print("[dup] SKIPPED — the manuscript sources are not part of this tree "
-              "(the public code archive ships no LaTeX manuscript); the generated "
+              "(the public code mirror ships no LaTeX manuscript); the generated "
               "tables are still checked for duplication")
     report = args.report
     groups: dict[str, list[tuple[str, int, str]]] = collections.defaultdict(list)
