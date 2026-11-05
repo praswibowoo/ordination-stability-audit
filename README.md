@@ -3,14 +3,12 @@
 Companion code for: *Calibrating deletion stability in pooled multivariate
 environmental data: a study-level resampling framework*.
 
-This repository is the **core code** of the audit: the reusable diagnostic, the
-R1 drift anchor, the R2 per-event calibration, the SDR estimators, and the
-verification gates. It also carries the Stage-A presence-verification sheet
-(`docs/verification/`) so the 39-paper audit in Table S14 can be checked. It is
-**not** the full reproduction bundle. The data layers, working documents, and
-the full generated result set ship in the Zenodo archives (see *Full
-reproduction* below); the EES rev3 value-layer and sensitivity tables are also
-included in `results/` here.
+This repository is the **code release** for the audit: the reusable diagnostic,
+the R1 drift anchor, the R2 per-event calibration, the SDR estimators, the
+verification gates, the analysis scripts, result tables, and figure and table
+builders. It also carries the Stage-A presence-verification sheet
+(`docs/verification/`) so the 39-paper audit in Table S14 can be checked. The
+data layers are in the Zenodo data record (see *Full reproduction* below).
 
 ## What it does
 
@@ -23,7 +21,7 @@ included in `results/` here.
 - `code/stability_diagnostic.py`: a standalone Python API and CLI for applying
   the diagnostic to another meta-matrix.
 
-## EES rev3 additions
+## EES additions
 
 The EES revision adds seven scripts and their result tables:
 

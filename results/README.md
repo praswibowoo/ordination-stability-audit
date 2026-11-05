@@ -19,9 +19,8 @@ They are the outputs of the seven scripts listed in the repository README.
 | `presence_misclassification_summary.csv` | same | 5–11% perturbation: block factor 1.24–1.38 |
 | `preprocessing_block_factor.csv` | `code/preprocessing_block_factor.py` | Presence 1.39 (1.21–1.60); value 1.07 (0.74–1.52) |
 
-The scripts require the frozen extraction layers and the main volume-matched
-results, which are in the Zenodo data bundle. The repository is the readable
-core, not the full reproduction bundle. The value-layer paired ratio falls from
+The scripts require the frozen extraction layers, which are in the Zenodo data
+record. The value-layer paired ratio falls from
 1.57 under recomputed z-scores to 1.12 under fixed z-scores, so the manuscript
 reports the value-layer average effect as not robust to the preprocessing
 protocol; B154 remains extreme under both protocols (53% vs 57%). The
