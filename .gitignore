@@ -13,3 +13,6 @@ dist/
 # generated outputs (not part of the code release)
 results/
 figures/
+
+# data layers are staged from the Zenodo data record
+docs/

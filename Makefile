@@ -16,13 +16,13 @@ FIG_DPI ?= 600
         figs-built tables check paper corrections blockperm churn sim d91 tableS absdrift verdict-replay vraw-scale f1-taxonomy \
         absratio volumematch configmatch diagnostics \
         fig2-print fig3-print fig5-print si-panels fig7-replay figS13 figS14 duplicates radius \
-        churn-pattern f6-tail f6-completeness sim-benchmark absratio-variants tableS13 tableS14 \
+        churn-pattern f6-tail f6-completeness sim-benchmark absratio-variants tableS13 \
         block-null power-extension robustness-weighting extraction-sensitivity family-search verdict-power family-tier-sensitivity \
         provenance-agreement density-baseline familyexpansion familyinvestigation tableM wordcount seed-baseline mds-classical-check mds-scope-audit r1-anchor r2-calibration sdr-paper-weighted sdr-hierarchical paper-stats decision-consequences structural-generality block-diagnostics
 
 # NOTE: `all` rebuilds submission artifacts from frozen layers: baseline gate ->
 # selftest -> all figures -> supplementary tables -> numbers check.
-all: stage-layers baseline selftest family-tiers family-tier-sensitivity fig2-print fig3-print fig5-print fig7-replay figD figS13 figS14 fig4 figs-built si-panels tables results/exC1_vraw_scale.csv f1-taxonomy tableS13 verdict-replay tableS14 tableS provenance-agreement results/exL_density_baseline_summary.csv composition check style dups wordcount
+all: stage-layers baseline selftest family-tiers family-tier-sensitivity fig2-print fig3-print fig5-print fig7-replay figD figS13 figS14 fig4 figs-built si-panels tables results/exC1_vraw_scale.csv f1-taxonomy tableS13 verdict-replay tableS provenance-agreement results/exL_density_baseline_summary.csv composition check style dups wordcount
 	@echo "[make] ALL GREEN — frozen layers -> submission figures -> tables -> numbers check complete"
 
 # NOTE: `family-tiers` is NOT in this target. It reads exK_absratio_summary.csv
@@ -184,19 +184,13 @@ tableS13:
 verdict-replay:
 	$(PY) code/verdict_rubric_replay.py
 
-# ---- Table S14 reads two generated inputs: the rubric replay agreement and
-# ---- the verdict-agreement summary. The latter is written by
-# ---- `verdict_provenance_agreement.py`, which the aggregate targets used to
-# ---- schedule AFTER `tableS14` — so a fresh unpack could not build the table.
-# ---- File targets, as elsewhere: built when missing or stale, not on every run.
+# ---- Verdict replay and provenance-agreement outputs are file targets:
+# ---- built when missing or stale, not on every run.
 results/verdict_replay_agreement.csv: code/verdict_rubric_replay.py
 	$(PY) code/verdict_rubric_replay.py
 
 results/verdict_agreement_summary.csv: code/verdict_provenance_agreement.py
 	$(PY) code/verdict_provenance_agreement.py
-
-tableS14: results/verdict_replay_agreement.csv results/verdict_agreement_summary.csv
-	$(PY) code/make_tableS14_provenance.py
 
 # ---- Phase C8: reproducible verdict-provenance strata + rubric-vs-author concordance
 # ---- Phase G2: density baseline (the dense-arm comparator)
@@ -293,7 +287,7 @@ selftest:
 # `corrections` carries the correction-suite experiments (block permutation,
 # churn correction, the sensitivity families, the benchmarks); the figure and
 # table builders read their outputs, so the chain must run both.
-reproduce: stage-layers figures sdr-paper-weighted sdr-hierarchical p2-3d r1-anchor corrections absratio-variants mdsstress familyexpansion family-tiers family-tier-sensitivity verdict-power rho-bootstrap block-null power-extension robustness-weighting extraction-sensitivity family-search fig4 figD figS13 figS14 figs-built tables vraw-scale f1-taxonomy tableS13 tableM verdict-replay tableS14 provenance-agreement density-baseline composition check style dups wordcount
+reproduce: stage-layers figures sdr-paper-weighted sdr-hierarchical p2-3d r1-anchor corrections absratio-variants mdsstress familyexpansion family-tiers family-tier-sensitivity verdict-power rho-bootstrap block-null power-extension robustness-weighting extraction-sensitivity family-search fig4 figD figS13 figS14 figs-built tables vraw-scale f1-taxonomy tableS13 tableM verdict-replay provenance-agreement density-baseline composition check style dups wordcount
 	@echo "[make] REPRODUCE complete - layers -> figures -> tables -> gates"
 
 recompute: figures fig4

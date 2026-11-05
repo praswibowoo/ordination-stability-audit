@@ -5,8 +5,7 @@ environmental data: a study-level resampling framework*.
 
 This repository is the **code release** for the audit: the reusable diagnostic,
 the R1 drift anchor, the R2 per-event calibration, the SDR estimators, the
-verification gates, the analysis scripts, and figure and table builders. It also carries the Stage-A presence-verification sheet
-(`docs/verification/`) so the 39-paper audit in Table S14 can be checked. The
+verification gates, the analysis scripts, and figure and table builders. The
 data layers are in the Zenodo data record (see *Full reproduction* below).
 
 ## What it does
@@ -75,8 +74,7 @@ make reproduce                 # full pipeline (~2.5 h)
 - **Code (MIT):** this repository.
 
 The repository contains the analysis scripts and the figure and table
-builders. The data record supplies the input layers. The Stage-A presence-verification sheet and
-its result log are in `docs/verification/`.
+builders. The data record supplies the input layers.
 
 ## Reproducibility note
 
