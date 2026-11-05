@@ -73,9 +73,9 @@ make reproduce      # full pipeline (~2.5 h)
 
 ## Full reproduction
 
-- **Data record (CC BY 4.0):** https://doi.org/10.5281/zenodo.23552334
-  (concept DOI; latest version). This is a general corpus release, not a
-  single-paper supplement.
+- **Data record (CC BY 4.0):** https://doi.org/10.5281/zenodo.23973301
+  (version 2; concept DOI https://doi.org/10.5281/zenodo.23552334). This is a
+  general corpus release, not a single-paper supplement.
 - **Code (MIT):** this repository.
 
 The code bundle contains the 188 input files (plus the archive manifest), the generated results, and the
