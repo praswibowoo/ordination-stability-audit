@@ -1,44 +1,52 @@
 # Ordination stability audit — core code
 
-Companion code for: *Calibrating deletion stability in pooled multivariate
-environmental data: a study-level resampling framework*.
+Companion code for:
 
-This repository is the **code release** for the audit: the reusable diagnostic,
-the R1 drift anchor, the R2 per-event calibration, the SDR estimators, the
-verification gates, the analysis scripts, and figure and table builders. The
-data layers are in the Zenodo data record (see *Full reproduction* below).
+> *Projection- and composition-dependent study-block effects in a pooled
+> water-quality corpus: a study-level deletion audit.*
+
+This repository is the **code release** for the audit. It contains the reusable
+diagnostic, the core deletion-stability experiments, the EES sensitivity
+analyses, and the figure builders.
+
+It does **not** contain manuscript sources, derived data, result tables, or
+generated figures. The data record supplies the input layers; outputs are
+written to `results/` and `figures/`.
 
 ## What it does
 
 - Leave-one-study-out deletion with Procrustes drift and neighbour churn.
-- A volume-matched scattered control that separates block structure from
-  deleted volume.
+- Volume-matched scattered controls for block structure versus deleted volume.
+- Composition/density-matched controls.
 - Row-weighted, pooled study-level, and per-event study-weighted sparsity drift
   ratios (SDR).
-- R2 calibration of the per-event estimator (size and power).
+- Rank, cluster, and decision-level stability.
+- R1 drift scaling and R2 size/power calibration.
 - `code/stability_diagnostic.py`: a standalone Python API and CLI for applying
   the diagnostic to another meta-matrix.
 
-## EES additions
+## Code layout
 
-The EES revision adds seven scripts:
-
-| File | Purpose |
+| Area | Main files |
 |---|---|
-| `code/experiment_H_volumematch_value.py` | Value-layer volume-matched replication (70 studies, 421 rows) |
-| `code/ees_rev3_splits.py` | Real-corpus repeated/varying-panel, single/multi-row, and drop-substitute splits |
-| `code/preprocessing_sensitivity.py` | Fixed-centring/z-scoring sensitivity for the presence and value layers |
-| `code/make_fig8_block_effect.py` | Figure 3: per-study paired ratios and block-versus-matched drift |
-| `code/composition_matched_control.py` | Composition/density-matched control (same presence configurations where donors exist) |
-| `code/presence_misclassification_sensitivity.py` | Cell-level present-to-NR perturbation sensitivity |
-| `code/preprocessing_block_factor.py` | Fixed-preprocessing block factor from the per-paper layer |
+| Diagnostic | `stability_diagnostic.py` |
+| Data staging | `stage_layers.py`, `phase4_freeze.py`, `harmonize_units.py`, `stageB_merge.py` |
+| Core deletion audit | `experiment_C1.py`, `experiment_H_volumematch.py`, `experiment_H_volumematch_value.py`, `experiment_L_density_baseline.py`, `experiment_S_block_null.py`, `experiment_structural_generality.py` |
+| Drift, churn, SDR | `churn_corrected.py`, `pattern_churn.py`, `churn_frac_ci.py`, `sdr_paper_weighted.py`, `sdr_hierarchical.py` |
+| Rank and decisions | `decision_consequences.py`, `p2_3d_sdr.py`, `block_model_diagnostics.py` |
+| Calibration | `r1_anchor.py`, `r2_per_event_calibration.py`, `experiment_S_validation.py`, `experiment_S_power_extension.py`, `sim_random_drift_benchmark.py` |
+| EES sensitivities | `ees_rev3_splits.py`, `preprocessing_sensitivity.py`, `preprocessing_block_factor.py`, `composition_matched_control.py`, `presence_misclassification_sensitivity.py`, `extraction_confidence_sensitivity.py` |
+| Robustness | `robustness_duplicates.py`, `robustness_exclB175.py`, `robustness_weighting.py`, `rho_paper_bootstrap.py`, `radius_check.py`, `tie_order_sensitivity.py`, `dedup_scan.py` |
+| MDS diagnostics | `mds_classical_check.py`, `mds_multistart_check.py`, `mds_stress.py`, `mds_seed_baseline.py`, `audit_mds_scope.py` |
+| Figures | `make_fig1_coreport.py`, `make_fig2_print.py`, `make_fig8_block_effect.py`, `make_si_panels.py`, `make_fig7_replay.py` |
 
-These scripts require the frozen extraction layers from the Zenodo data record;
-their tables are generated under `results/`, and figures under `figures/`.
+Manuscript-only material — family/verdict legacy analyses, manuscript checks,
+table builders, PRISMA/corpus-funnel builders, `docs/`, `results/`, and
+`figures/` — is kept in the main manuscript repository, not here.
 
 ## Install
 
-```
+```bash
 conda env create -f environment.yml
 # or
 pip install -r requirements.txt
@@ -49,39 +57,37 @@ Matplotlib 3.11. Seed 42 throughout.
 
 ## Quickstart
 
-```
+```bash
 python3 code/stability_diagnostic.py --help
 ```
 
-The individual analysis scripts read the staged extraction layers
-(`docs/extraction/stageA`, `docs/extraction/stageB`). Outputs are written to
-`results/` and `figures/`. The data layers are in the Zenodo data record; unpack
-it beside this repository, then run:
+The analysis scripts read the staged extraction layers. The data layers are in
+the Zenodo record; unpack it beside this repository, then run:
 
-```
+```bash
 python3 code/stage_layers.py   # place the data layers at the expected paths
-make all                       # fast rebuild: figures, tables, gates (~1 min)
-make paper-stats               # R1 anchor + per-event SDR (~1 min)
-make r2-calibration            # per-event size/power calibration (~5 min)
-make reproduce                 # full pipeline (~2.5 h)
+make all                       # stage layers + statistical self-test
+make core                      # full core analysis
+make figures                   # figures from the generated results
+make mds                       # MDS diagnostics
 ```
 
-## Full reproduction
+`make all` is the fast check. `make core` and `make figures` require the data
+record; `make figures` also requires the results produced by `make core`.
 
-- **Data record (CC BY 4.0):** https://doi.org/10.5281/zenodo.23973301
-  (version 2; concept DOI https://doi.org/10.5281/zenodo.23552334). This is a
-  general corpus release, not a single-paper supplement.
+## Data record
+
+- **Data (CC BY 4.0):** https://doi.org/10.5281/zenodo.23973301
+  (concept DOI https://doi.org/10.5281/zenodo.23552334).
 - **Code (MIT):** this repository.
 
-The repository contains the analysis scripts and the figure and table
-builders. The data record supplies the input layers.
+The data record is a general corpus release, not a single-paper supplement.
 
 ## Reproducibility note
 
 t-SNE is a descriptive variant and its embedding depends on the BLAS/threading
-environment. t-SNE rows in the SDR and churn tables are run-dependent; the
-metric variants (PCA and MDS) and the reported inferential statistics reproduce
-exactly.
+environment. t-SNE rows are run-dependent; the metric variants (PCA and MDS)
+and the reported inferential statistics reproduce exactly.
 
 ## License
 
