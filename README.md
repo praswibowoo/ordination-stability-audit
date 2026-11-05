@@ -22,23 +22,23 @@ written to `results/` and `figures/`.
   ratios (SDR).
 - Rank, cluster, and decision-level stability.
 - R1 drift scaling and R2 size/power calibration.
-- `code/stability_diagnostic.py`: a standalone Python API and CLI for applying
+- `code/core/stability_diagnostic.py`: a standalone Python API and CLI for applying
   the diagnostic to another meta-matrix.
 
 ## Code layout
 
 | Area | Main files |
 |---|---|
-| Diagnostic | `stability_diagnostic.py` |
-| Data staging | `stage_layers.py`, `phase4_freeze.py`, `harmonize_units.py`, `stageB_merge.py` |
-| Core deletion audit | `experiment_C1.py`, `experiment_H_volumematch.py`, `experiment_H_volumematch_value.py`, `experiment_L_density_baseline.py`, `experiment_S_block_null.py`, `experiment_structural_generality.py` |
-| Drift, churn, SDR | `churn_corrected.py`, `pattern_churn.py`, `churn_frac_ci.py`, `sdr_paper_weighted.py`, `sdr_hierarchical.py` |
-| Rank and decisions | `decision_consequences.py`, `p2_3d_sdr.py`, `block_model_diagnostics.py` |
-| Calibration | `r1_anchor.py`, `r2_per_event_calibration.py`, `experiment_S_validation.py`, `experiment_S_power_extension.py`, `sim_random_drift_benchmark.py` |
-| EES sensitivities | `ees_rev3_splits.py`, `preprocessing_sensitivity.py`, `preprocessing_block_factor.py`, `composition_matched_control.py`, `presence_misclassification_sensitivity.py`, `extraction_confidence_sensitivity.py` |
-| Robustness | `robustness_duplicates.py`, `robustness_exclB175.py`, `robustness_weighting.py`, `rho_paper_bootstrap.py`, `radius_check.py`, `tie_order_sensitivity.py`, `dedup_scan.py` |
-| MDS diagnostics | `mds_classical_check.py`, `mds_multistart_check.py`, `mds_stress.py`, `mds_seed_baseline.py`, `audit_mds_scope.py` |
-| Figures | `make_fig1_coreport.py`, `make_fig2_print.py`, `make_fig8_block_effect.py`, `make_si_panels.py`, `make_fig7_replay.py` |
+| Diagnostic | `code/core/stability_diagnostic.py` |
+| Data staging | `code/data/stage_layers.py`, `phase4_freeze.py`, `harmonize_units.py`, `stageB_merge.py` |
+| Core deletion audit | `code/core/experiment_C1.py`, `experiment_H_volumematch.py`, `experiment_H_volumematch_value.py`, `experiment_L_density_baseline.py`, `experiment_S_block_null.py`, `experiment_structural_generality.py` |
+| Drift, churn, SDR | `code/core/churn_corrected.py`, `pattern_churn.py`, `churn_frac_ci.py`, `sdr_paper_weighted.py`, `sdr_hierarchical.py` |
+| Rank and decisions | `code/core/decision_consequences.py`, `p2_3d_sdr.py`, `block_model_diagnostics.py` |
+| Calibration | `code/core/r1_anchor.py`, `r2_per_event_calibration.py`, `experiment_S_validation.py`, `experiment_S_power_extension.py`, `sim_random_drift_benchmark.py` |
+| EES sensitivities | `code/ees/ees_rev3_splits.py`, `preprocessing_sensitivity.py`, `preprocessing_block_factor.py`, `composition_matched_control.py`, `presence_misclassification_sensitivity.py`, `extraction_confidence_sensitivity.py` |
+| Robustness | `code/core/robustness_duplicates.py`, `robustness_exclB175.py`, `robustness_weighting.py`, `rho_paper_bootstrap.py`, `radius_check.py`, `tie_order_sensitivity.py`, `dedup_scan.py` |
+| MDS diagnostics | `code/mds/mds_classical_check.py`, `mds_multistart_check.py`, `mds_stress.py`, `mds_seed_baseline.py`, `audit_mds_scope.py` |
+| Figures | `code/figures/make_fig1_coreport.py`, `make_fig2_print.py`, `make_fig8_block_effect.py`, `make_si_panels.py`, `make_fig7_replay.py` |
 
 Manuscript-only material — family/verdict legacy analyses, manuscript checks,
 table builders, PRISMA/corpus-funnel builders, `docs/`, `results/`, and
@@ -58,14 +58,14 @@ Matplotlib 3.11. Seed 42 throughout.
 ## Quickstart
 
 ```bash
-python3 code/stability_diagnostic.py --help
+python3 code/core/stability_diagnostic.py --help
 ```
 
 The analysis scripts read the staged extraction layers. The data layers are in
 the Zenodo record; unpack it beside this repository, then run:
 
 ```bash
-python3 code/stage_layers.py   # place the data layers at the expected paths
+python3 code/data/stage_layers.py   # place the data layers at the expected paths
 make all                       # stage layers + statistical self-test
 make core                      # full core analysis
 make figures                   # figures from the generated results
