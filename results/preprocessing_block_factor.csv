@@ -1,3 +1,0 @@
-layer,n_papers,n_events,block_factor,block_ci_lo,block_ci_hi,beta_block
-presence_pca,122,244,1.38617,1.20829,1.60078,0.326547
-std_value_pca,70,140,1.06923,0.738897,1.52303,0.0669404

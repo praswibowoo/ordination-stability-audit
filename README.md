@@ -5,8 +5,7 @@ environmental data: a study-level resampling framework*.
 
 This repository is the **code release** for the audit: the reusable diagnostic,
 the R1 drift anchor, the R2 per-event calibration, the SDR estimators, the
-verification gates, the analysis scripts, result tables, and figure and table
-builders. It also carries the Stage-A presence-verification sheet
+verification gates, the analysis scripts, and figure and table builders. It also carries the Stage-A presence-verification sheet
 (`docs/verification/`) so the 39-paper audit in Table S14 can be checked. The
 data layers are in the Zenodo data record (see *Full reproduction* below).
 
@@ -23,7 +22,7 @@ data layers are in the Zenodo data record (see *Full reproduction* below).
 
 ## EES additions
 
-The EES revision adds seven scripts and their result tables:
+The EES revision adds seven scripts:
 
 | File | Purpose |
 |---|---|
@@ -35,17 +34,8 @@ The EES revision adds seven scripts and their result tables:
 | `code/presence_misclassification_sensitivity.py` | Cell-level present-to-NR perturbation sensitivity |
 | `code/preprocessing_block_factor.py` | Fixed-preprocessing block factor from the per-paper layer |
 
-The corresponding tables are in `results/`:
-`exH_value_*`, `ees_rev3_splits.csv`,
-`preprocessing_sensitivity.csv`,
-`preprocessing_sensitivity_summary.csv`,
-`composition_matched_control.csv`,
-`composition_matched_summary.csv`,
-`presence_misclassification_sensitivity.csv`,
-`presence_misclassification_summary.csv`, and
-`preprocessing_block_factor.csv`. These scripts require the full extraction
-layers and the main volume-matched results, which are in the Zenodo data bundle;
-the repository is the readable core, not the full bundle.
+These scripts require the frozen extraction layers from the Zenodo data record;
+their tables are generated under `results/`, and figures under `figures/`.
 
 ## Install
 
@@ -65,9 +55,9 @@ python3 code/stability_diagnostic.py --help
 ```
 
 The individual analysis scripts read the staged extraction layers
-(`docs/extraction/stageA`, `docs/extraction/stageB`) and the generated result
-tables (`results/`). The data layers are in the Zenodo data record; unpack it
-beside this repository, then run:
+(`docs/extraction/stageA`, `docs/extraction/stageB`). Outputs are written to
+`results/` and `figures/`. The data layers are in the Zenodo data record; unpack
+it beside this repository, then run:
 
 ```
 python3 code/stage_layers.py   # place the data layers at the expected paths
@@ -84,9 +74,8 @@ make reproduce                 # full pipeline (~2.5 h)
   general corpus release, not a single-paper supplement.
 - **Code (MIT):** this repository.
 
-The repository contains the analysis scripts, the generated result tables
-shipped with this code release, and the figure and table builders. The data
-record supplies the input layers. The Stage-A presence-verification sheet and
+The repository contains the analysis scripts and the figure and table
+builders. The data record supplies the input layers. The Stage-A presence-verification sheet and
 its result log are in `docs/verification/`.
 
 ## Reproducibility note

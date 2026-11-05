@@ -9,3 +9,7 @@ __pycache__/
 build/
 dist/
 *.egg-info/
+
+# generated outputs (not part of the code release)
+results/
+figures/

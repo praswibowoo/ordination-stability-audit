@@ -1,4 +1,0 @@
-drop_rate,add_rate,block_factor_median,block_factor_min,block_factor_max,paired_median,paired_min,paired_max,n
-0.05,0.01,1.35265,1.34673,1.38159,1.269,1.1896,1.28274,3
-0.1,0.05,1.26527,1.23981,1.27193,1.11464,1.10963,1.16213,3
-0.111,0,1.32532,1.29032,1.33215,1.20394,1.15006,1.24312,3

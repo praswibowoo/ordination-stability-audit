@@ -1,2 +1,0 @@
-n_papers,block_med,matched_med,ratio_of_medians,median_paired_ratio,paired_ci_lo,paired_ci_hi,wilcoxon_p,block_factor,block_ci_lo,block_ci_hi,mean_exact_fraction,min_exact_fraction,n_events
-122,0.00022333,0.000194417,1.14871,1.10096,1,1.23006,0.00678907,1.17981,1.05477,1.32266,0.137432,0,12322
