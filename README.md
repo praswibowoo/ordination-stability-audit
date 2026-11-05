@@ -25,7 +25,7 @@ included in `results/` here.
 
 ## EES rev3 additions
 
-The EES revision adds four scripts and their result tables:
+The EES revision adds seven scripts and their result tables:
 
 | File | Purpose |
 |---|---|
@@ -33,13 +33,21 @@ The EES revision adds four scripts and their result tables:
 | `code/ees_rev3_splits.py` | Real-corpus repeated/varying-panel, single/multi-row, and drop-substitute splits |
 | `code/preprocessing_sensitivity.py` | Fixed-centring/z-scoring sensitivity for the presence and value layers |
 | `code/make_fig8_block_effect.py` | Figure 3: per-study paired ratios and block-versus-matched drift |
+| `code/composition_matched_control.py` | Composition/density-matched control (same presence configurations where donors exist) |
+| `code/presence_misclassification_sensitivity.py` | Cell-level present-to-NR perturbation sensitivity |
+| `code/preprocessing_block_factor.py` | Fixed-preprocessing block factor from the per-paper layer |
 
 The corresponding tables are in `results/`:
 `exH_value_*`, `ees_rev3_splits.csv`,
-`preprocessing_sensitivity.csv`, and
-`preprocessing_sensitivity_summary.csv`. These scripts require the full
-extraction layers and the main volume-matched results, which are in the Zenodo
-data bundle; the repository is the readable core, not the full bundle.
+`preprocessing_sensitivity.csv`,
+`preprocessing_sensitivity_summary.csv`,
+`composition_matched_control.csv`,
+`composition_matched_summary.csv`,
+`presence_misclassification_sensitivity.csv`,
+`presence_misclassification_summary.csv`, and
+`preprocessing_block_factor.csv`. These scripts require the full extraction
+layers and the main volume-matched results, which are in the Zenodo data bundle;
+the repository is the readable core, not the full bundle.
 
 ## Install
 
