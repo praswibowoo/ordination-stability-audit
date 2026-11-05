@@ -1,0 +1,2 @@
+d_lopo_med,d_matched_med,ratio_of_medians,ratio_of_medians_ci_lo,ratio_of_medians_ci_hi,median_paired_ratio,median_paired_ratio_ci_lo,median_paired_ratio_ci_hi,wilcoxon_stat,wilcoxon_p,n_block_gt_scattered,n_total,pct_block_gt_scattered,churn_lopo_med,churn_matched_med,n_draws,n_rows_deleted_lopo,n_rows_deleted_matched
+0.00020526868277803847,0.00013713855599620996,1.4967977552841625,0.9328010220524655,2.488774914542133,1.5743132707290344,0.9576760652023166,2.1204804004596403,815.0,0.012356088906819853,41,70,58.57142857142857,0.0,0.0,100,4,4
