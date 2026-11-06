@@ -35,7 +35,7 @@ written to `results/` and `figures/`.
 | Drift, churn, SDR | `code/core/churn_corrected.py`, `pattern_churn.py`, `churn_frac_ci.py`, `sdr_paper_weighted.py`, `sdr_hierarchical.py` |
 | Rank and decisions | `code/core/decision_consequences.py`, `p2_3d_sdr.py`, `block_model_diagnostics.py` |
 | Calibration | `code/core/r1_anchor.py`, `r2_per_event_calibration.py`, `experiment_S_validation.py`, `experiment_S_power_extension.py`, `sim_random_drift_benchmark.py` |
-| EES sensitivities | `code/ees/ees_rev3_splits.py`, `preprocessing_sensitivity.py`, `preprocessing_block_factor.py`, `composition_matched_control.py`, `presence_misclassification_sensitivity.py`, `extraction_confidence_sensitivity.py` |
+| EES sensitivities | `code/ees/ees_rev3_splits.py`, `preprocessing_sensitivity.py`, `preprocessing_block_factor.py`, `composition_matched_control.py`, `study_level_aggregate.py`, `joint_2d3d_ratio.py`, `presence_misclassification_sensitivity.py`, `extraction_confidence_sensitivity.py` |
 | Robustness | `code/core/robustness_duplicates.py`, `robustness_exclB175.py`, `robustness_weighting.py`, `rho_paper_bootstrap.py`, `radius_check.py`, `tie_order_sensitivity.py`, `dedup_scan.py` |
 | MDS diagnostics | `code/mds/mds_classical_check.py`, `mds_multistart_check.py`, `mds_stress.py`, `mds_seed_baseline.py`, `audit_mds_scope.py` |
 | Figures | `code/figures/make_fig1_coreport.py`, `make_fig2_print.py`, `make_fig8_block_effect.py`, `make_si_panels.py`, `make_fig7_replay.py` |

@@ -140,8 +140,12 @@ def main() -> None:
         lopo.append(st)
         pool["lopo"][0].append(r_); pool["lopo"][1].append(d_)
         # arm 2 — volume-matched scattered deletion
+        # Donors exclude the deleted study: an overlapping control can partly
+        # reproduce the block event and makes the contrast unnecessarily
+        # conservative.
+        donors = np.where(~mask_p)[0]
         rng = np.random.default_rng(SEED + zlib.crc32(p.encode()) % 100000)
-        drop = rng.choice(n, size=n_p, replace=False)
+        drop = rng.choice(donors, size=n_p, replace=False)
         keep2 = np.ones(n, bool)
         keep2[drop] = False
         st2, r2_, d2_ = event_stats(S_full, knn_full, X, rho, keep2)
@@ -154,7 +158,7 @@ def main() -> None:
         for dr in range(n_draws - 1):
             rng_d = np.random.default_rng(
                 SEED + zlib.crc32(p.encode()) % 100000 + 7919 * (dr + 1))
-            drop_d = rng_d.choice(n, size=n_p, replace=False)
+            drop_d = rng_d.choice(donors, size=n_p, replace=False)
             keep_d = np.ones(n, bool)
             keep_d[drop_d] = False
             st_d, r_d, d_d = event_stats(S_full, knn_full, X, rho, keep_d)

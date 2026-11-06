@@ -4,8 +4,8 @@
 The volume-matched control in experiment_H_volumematch.py matches the NUMBER of
 rows deleted but not their composition. This script adds a composition-matched
 control: for each study, it deletes a set of rows from OTHER studies whose
-presence configurations match the study's rows (exact configuration where a
-donor exists; nearest-density fallback otherwise). It then compares block
+presence configurations match the study's rows (optimal one-to-one assignment,
+exact configuration first and density second). It then compares block
 deletion drift with this composition-matched deletion drift.
 
 If the block effect survives composition matching, it is not merely a
@@ -28,6 +28,7 @@ import zlib
 import numpy as np
 import pandas as pd
 from scipy import stats
+from scipy.optimize import linear_sum_assignment
 
 import sys
 _CODE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -104,21 +105,23 @@ def main() -> None:
 
         for dr in range(args.draws):
             rng = np.random.default_rng(SEED + zlib.crc32(str(p).encode()) % 100000 + 7919 * dr)
-            used = set()
-            chosen = []
-            exact = 0
-            for i in idx_p:
-                cand = [j for j in donor_cfg.get(cfg[i], []) if j not in used]
-                if cand:
-                    j = int(rng.choice(cand))
-                    exact += 1
-                else:
-                    # nearest-density donor not already used
-                    rem = np.array([j for j in donors if j not in used])
-                    order = np.argsort(np.abs(rho[rem] - rho[i]))
-                    j = int(rem[order[0]])
-                used.add(j)
-                chosen.append(j)
+            # Optimal one-to-one assignment of the study's rows to donor rows.
+            # Exact configuration matches receive near-zero cost, so the
+            # assignment maximises exact matches first and then minimises the
+            # density difference among tied configurations.  The previous
+            # greedy loop could exhaust exact donors early and produce an
+            # avoidable composition mismatch.
+            cost = np.empty((len(idx_p), len(donors)), float)
+            for a, i in enumerate(idx_p):
+                for b, j in enumerate(donors):
+                    density_cost = abs(float(rho[i]) - float(rho[j]))
+                    cost[a, b] = (0.001 * density_cost
+                                  if cfg[i] == cfg[j]
+                                  else 1000.0 + density_cost)
+            row_ind, col_ind = linear_sum_assignment(cost)
+            chosen = [int(donors[b]) for b in col_ind]
+            exact = int(sum(cfg[idx_p[a]] == cfg[donors[b]]
+                            for a, b in zip(row_ind, col_ind)))
             keep = np.ones(n, bool)
             keep[np.asarray(chosen)] = False
             d, ch = event_drift(S_full, knn_full, X, rho, keep)
