@@ -2,8 +2,8 @@
 
 Companion code for:
 
-> *When does deleting one study change a pooled ordination? A study-level
-> deletion audit of a water-quality corpus.*
+> *Does deleting one study change a pooled ordination? A deletion audit of a
+> water-quality corpus.*
 
 This repository is the **code release** for the audit. It contains the reusable
 diagnostic, the core deletion-stability experiments, the EES sensitivity
