@@ -76,7 +76,7 @@ def _csv(path):
     return list(csv.DictReader(open(path, encoding="utf-8-sig")))
 
 
-def load():
+def load_legacy():
     """Presence matrix (764 data rows × 44 params) + F1-physical value subset."""
     pres = _csv(os.path.join(ROOT, "docs/extraction/stageA/matrix_presence_v2.csv"))
     hdr = list(pres[0].keys())
@@ -131,6 +131,35 @@ def load():
     Xv = np.asarray(Xv, float)
     rho_v = np.asarray(rho_v, float)
     return X, rho, paper, params, Xv, keys, rho_v
+
+
+def load_primary():
+    """Primary analysis layers: 730 coverage rows / 122 studies, 410 value rows / 69 studies."""
+    from revision_layers import load_layers
+
+    d = load_layers(
+        include_standard=False,
+        b154_rule="source_override",
+        range_rule="midpoint",
+        qa_action="exclude",
+    )
+    return d.X, d.rho, d.paper, d.params, d.Xv, d.keysv, d.rho_v
+
+
+def load(*args, **kwargs):
+    """Default loader for the manuscript's primary 730/410 analysis set.
+
+    Explicit legacy flags (from revision_layers.layer_kwargs) are honoured;
+    use ``load_legacy()`` for the archived 764/421 defaults.
+    """
+    if args:
+        raise TypeError("load() takes keyword layer flags only")
+    if not kwargs:
+        return load_primary()
+    from revision_layers import load_layers
+
+    d = load_layers(**kwargs)
+    return d.X, d.rho, d.paper, d.params, d.Xv, d.keysv, d.rho_v
 
 
 def jac_dist(X):
@@ -249,8 +278,11 @@ def run_variant(variant, X, Xv, rho, paper, keys_all, keysv, modes=("lopo", "lor
     return rows
 
 def main():
-    lock = verify_baseline()
-    print("baseline OK (seed", lock["seed"], "| data_version", lock["data_version"] + ")")
+    try:
+        lock = verify_baseline()
+        print("baseline OK (seed", lock["seed"], "| data_version", lock["data_version"] + ")")
+    except FileNotFoundError:
+        print("[C1] results/phase4_baseline.json not present; skipping the optional freeze gate")
     X, rho, paper, params, Xv, keysv, rho_v = load()
     keys_all = [str(i) for i in range(len(X))]
     print(f"presence {X.shape} · {len(set(paper))} papers · F1 value rows {len(Xv)}")

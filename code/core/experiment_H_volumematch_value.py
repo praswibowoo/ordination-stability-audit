@@ -3,7 +3,8 @@
 
 The presence-layer block model is reported in Section 4.2 of the EES manuscript.
 This script runs the same paired design on the standardized value PCA (four F1
-physical parameters, 421 rows, 70 papers), so the block effect is not a
+physical parameters, 410 rows, 69 papers for the primary set; the legacy
+421/70 set is available via experiment_C1.load_legacy()), so the block effect is not a
 presence-layer/reporting artifact.
 
 Reads the frozen layers through experiment_C1.load(); writes:

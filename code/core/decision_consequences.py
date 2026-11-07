@@ -5,8 +5,9 @@ The drift audit reports normalized Procrustes distances. This script adds the
 question a reader actually asks: does deleting one paper change a ranking or a
 cluster assignment?
 
-For presence PCA (764 rows, 122 papers) and standardized F1 value PCA (421
-rows, 70 papers), each leave-one-paper-out fit is compared with the full fit:
+For presence PCA (730 primary rows, 122 papers) and standardized F1 value PCA
+(410 primary rows, 69 papers), each leave-one-paper-out fit is compared with the
+full fit; the legacy 764/421 set is available via experiment_C1.load_legacy():
 
   * top-10% and top-25% PC1 rank overlap (sign-aligned PC1);
   * top-10 priority-set overlap;

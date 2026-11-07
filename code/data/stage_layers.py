@@ -5,7 +5,7 @@ The analysis scripts read the frozen layers from fixed paths
 (`docs/extraction/stageA/matrix_presence_v2.csv`, `docs/extraction/stageB/
 matrix_values_v2.csv`, `docs/family_map.csv`) and two builders read the
 released data record at `release/p1_family_pca_data_v1.0/`. The current
-record is `p1_family_pca_data_v1.2`; earlier v1.1/v1.0 paths are kept for
+record is `p1_family_pca_data_v1.3`; earlier v1.2/v1.1/v1.0 paths are kept for
 reproduction of archived runs. In the authors'
 working tree both locations already hold the same bytes, so this script does
 nothing. In a fresh unpack of the two Zenodo records it copies the data
@@ -51,12 +51,15 @@ LAYERS = [
 
 
 def find_record():
-    for rel in ("release/p1_family_pca_data_v1.2",
+    for rel in ("release/p1_family_pca_data_v1.3",
+                "release/p1_family_pca_data_v1.2",
                 "release/p1_family_pca_data_v1.1",
                 "release/p1_family_pca_data_v1.0",
+                "../p1_family_pca_data_v1.3",
                 "../p1_family_pca_data_v1.2",
                 "../p1_family_pca_data_v1.1",
                 "../p1_family_pca_data_v1.0",
+                "p1_family_pca_data_v1.3",
                 "p1_family_pca_data_v1.2",
                 "p1_family_pca_data_v1.1",
                 "p1_family_pca_data_v1.0"):

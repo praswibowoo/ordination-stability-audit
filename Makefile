@@ -44,9 +44,18 @@ core:
 	$(PY) code/ees/ees_rev3_splits.py
 	$(PY) code/ees/preprocessing_sensitivity.py
 	$(PY) code/ees/preprocessing_block_factor.py
-	$(PY) code/ees/composition_matched_control.py
+	$(PY) code/ees/composition_matched_control.py --matching optimal --workers 4
+	$(PY) code/ees/composition_formal_test.py --vol-csv results/exH_volumematch_draws.csv --comp-csv results/composition_matched_control.csv --median-draws --out results/composition_formal_test.csv
+	$(PY) code/ees/wp3_composition_extra.py
+	$(PY) code/ees/coverage_paired_ratio_rules.py
+	$(PY) code/core/block_interaction_primary.py
+	$(PY) code/ees/study_level_adjusted.py
+	$(PY) code/core/observed_sigma_calibration.py
+	$(PY) code/core/subset_sdr_calibration.py --reps 50 --subsets 100 --perm 199 --sigma 0.87 --out results/subset_sdr_calibration.csv
 	$(PY) code/ees/presence_misclassification_sensitivity.py
 	$(PY) code/ees/extraction_confidence_sensitivity.py
+	$(PY) code/ees/study_level_aggregate.py
+	$(PY) code/ees/joint_2d3d_ratio.py
 	$(PY) code/core/robustness_duplicates.py
 	$(PY) code/core/robustness_exclB175.py
 	$(PY) code/core/robustness_weighting.py
