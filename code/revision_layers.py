@@ -409,8 +409,8 @@ def legacy_layers() -> Layers:
 def add_layer_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     """Add the canonical layer flags to an argparse parser.
 
-    ``--layer legacy`` (default) reproduces the pre-WP1 764/421 set;
-    ``--layer primary`` selects the WP1 730/410 set. Individual flags override
+    ``--layer primary`` (default) selects the WP1 730/410 set;
+    ``--layer legacy`` reproduces the pre-WP1 764/421 set. Individual flags override
     the layer defaults.
     """
     parser.add_argument("--layer", choices=["legacy", "primary"], default="primary",
