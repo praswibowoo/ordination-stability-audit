@@ -32,6 +32,7 @@ written to `results/` and `figures/`.
 | Diagnostic | `code/core/stability_diagnostic.py` |
 | Data staging | `code/data/stage_layers.py`, `phase4_freeze.py`, `harmonize_units.py`, `stageB_merge.py` |
 | Core deletion audit | `code/core/experiment_C1.py`, `experiment_H_volumematch.py`, `experiment_H_volumematch_value.py`, `experiment_L_density_baseline.py`, `experiment_S_block_null.py`, `experiment_structural_generality.py` |
+| Curated primary audit | `code/core/clean_primary_audit.py` |
 | Drift, churn, SDR | `code/core/churn_corrected.py`, `pattern_churn.py`, `churn_frac_ci.py`, `sdr_paper_weighted.py`, `sdr_hierarchical.py` |
 | Rank and decisions | `code/core/decision_consequences.py`, `p2_3d_sdr.py`, `block_model_diagnostics.py` |
 | Calibration | `code/core/r1_anchor.py`, `r2_per_event_calibration.py`, `experiment_S_validation.py`, `experiment_S_power_extension.py`, `sim_random_drift_benchmark.py` |
@@ -77,13 +78,7 @@ make mds                       # MDS diagnostics
 `make all` is the fast check. `make core` and `make figures` require the data
 record; `make figures` also requires the results produced by `make core`.
 
-**Primary analysis set.** `experiment_C1.load()` now returns the manuscript's
-primary set: 730 coverage rows from 122 studies and 410 value-complete rows from
-69 studies. The legacy 764/421 set is available as
-`experiment_C1.load_legacy()` or with `--layer legacy` in scripts that expose
-that option. Outputs are written to `results/`; the manuscript's
-`results/wp3_primary/` contains the same primary estimates under the manuscript
-file names.
+**Primary analysis set.** `experiment_C1.load()` returns the full primary set: 730 coverage rows from 122 studies and 410 value-complete rows from 69 studies. The manuscript's curated primary set removes the B111/B175 re-publication pair and the single-row exceptions B095, B111, B182, and B239, giving 716 coverage rows from 117 studies and 397 value-complete rows from 65 studies. `code/core/clean_primary_audit.py` applies those exclusions and reruns the coverage 2-D and 3-D, water-only, value, value fixed-z, and value-clean audits; its outputs are in `results/wp3_clean/`. The full 730/122 and 410/69 sets are sensitivities. The legacy 764/421 set is available as `experiment_C1.load_legacy()` or with `--layer legacy` in scripts that expose that option.
 
 **Released presence table.** `presence.csv` populates `batch_id` on the first
 row of each paper block. To recover paper identity without the analysis loader,

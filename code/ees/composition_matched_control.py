@@ -12,11 +12,12 @@ one row per study (which destroyed exact matching). Assignments are randomized
 and checked to differ across draws.
 
 Reads: frozen presence layer via experiment_C1.load(); block events from
-       results/exH_volumematch.csv.
-Writes: results/composition_matched_control.csv
-        results/composition_matched_summary.csv
+       results/wp3_primary/exH_volumematch.csv by default.
+Writes: results/wp3_primary/composition_matched_control.csv
+        results/wp3_primary/composition_matched_summary.csv
 
-Run: python3 code/composition_matched_control.py [--draws 100] [--layer legacy|primary]
+Run: python3 code/composition_matched_control.py [--draws 100]
+     (primary + optimal are the defaults; use --layer legacy for the old set)
 """
 from __future__ import annotations
 
@@ -32,9 +33,8 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "code"))
-sys.path.insert(0, os.path.join(ROOT, "code", "core"))
 RESULTS = os.path.join(ROOT, "results")
 SEED = 42
 
@@ -296,19 +296,34 @@ def main() -> None:
     ap.add_argument("--draws", type=int, default=100)
     ap.add_argument("--bootstrap", type=int, default=2000)
     ap.add_argument("--matching", choices=("greedy", "optimal"), default="optimal",
-                    help="optimal capped min-cost flow (primary) or greedy exact-first cap")
+                    help="optimal capped min-cost flow (manuscript) or legacy greedy")
     ap.add_argument("--workers", type=int, default=1,
                     help="parallel worker processes (default 1)")
-    ap.add_argument("--block-csv", default=os.path.join(RESULTS, "exH_volumematch.csv"),
-                    help="presence block-event CSV (arm == lopo)")
-    ap.add_argument("--outdir", default=RESULTS,
-                    help="output directory (default: results)")
+    ap.add_argument("--block-csv", default=None,
+                    help="presence block-event CSV (default: primary wp3_primary)")
+    ap.add_argument("--exclude-papers", default="",
+                    help="comma-separated batch IDs to remove before the audit")
+    ap.add_argument("--outdir", default=None,
+                    help="output directory (default: wp3_primary for primary layer)")
     add_layer_args(ap)
+    ap.set_defaults(layer="primary")
     args = ap.parse_args()
+    if args.outdir is None:
+        args.outdir = (os.path.join(RESULTS, "wp3_primary")
+                       if args.layer == "primary" else RESULTS)
+    if args.block_csv is None:
+        args.block_csv = (os.path.join(RESULTS, "wp3_primary", "exH_volumematch.csv")
+                          if args.layer == "primary"
+                          else os.path.join(RESULTS, "exH_volumematch.csv"))
     os.makedirs(args.outdir, exist_ok=True)
 
     X, rho, paper, params, *_ = load(**layer_kwargs(args))
     paper = np.asarray(paper)
+    excluded = {p.strip() for p in args.exclude_papers.split(",") if p.strip()}
+    if excluded:
+        keep = ~np.isin(paper, sorted(excluded))
+        X, rho, paper = X[keep], rho[keep], paper[keep]
+        print(f"excluded {sorted(excluded)}: {X.shape[0]} rows / {len(set(paper))} papers")
     n = len(X)
     uniq = sorted(set(paper))
     S_full = ordinate("pca_pres", X)
@@ -318,7 +333,8 @@ def main() -> None:
     cfg = [bytes(X[i].astype(np.uint8)) for i in range(n)]
 
     block = pd.read_csv(args.block_csv)
-    block = block[block["arm"] == "lopo"][["paper", "med_drift", "n_rows_deleted"]]
+    block = block[block["arm"].isin(["lopo", "block"])][
+        ["paper", "med_drift", "n_rows_deleted"]]
     block = block[block["paper"].isin(uniq)].reset_index(drop=True)
     if len(block) != len(uniq):
         raise ValueError(f"block CSV has {len(block)} LOPO rows for {len(uniq)} studies")

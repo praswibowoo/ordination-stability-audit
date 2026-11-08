@@ -1,28 +1,30 @@
 #!/usr/bin/env python3
-"""experiment_S_block_null.py — block-preserving ordination null (C4 follow-up).
+"""experiment_S_block_null.py — paper-weighted density null and study bootstrap.
 
-The independent-Bernoulli check (experiment_S_ordination_calibration.py) did
-not preserve the real co-reporting blocks, so its null SDR was far from 1.
-This experiment keeps the real presence matrix exactly and shuffles **whole
-paper blocks** (all rows of a paper, with their panels and densities). It then
-runs actual LOPO PCA or classical-MDS (PCoA) refits and asks:
+The old "block-preserving null" permuted whole block labels. Because deletion
+is defined by the labels, that permutation could not change the drift values:
+the 0.604 observed / 0.607 null comparison was tautological.
 
-  * is the observed SDR typical of the block-preserving null?
-  * does the paper-level density permutation test reject at ~5% under that null?
+This script replaces it with two separate procedures:
 
-Outputs
--------
-results/sim_block_null_<tag>.csv          per-subset / per-permutation outcomes
-results/sim_block_null_summary_<tag>.csv  observed vs null SDR and rejection rates
+  * inference — permute paper-level mean coverage density across papers while
+    holding the real rows and blocks fixed, then recompute the SDR. The
+    one-sided p-value is for the observed SDR being below the null (dense
+    studies drifting more); the two-sided p is also reported.
+  * uncertainty — a study-level block bootstrap that resamples whole papers
+    with replacement and recomputes the SDR.
 
-The tag names the cited artifact. The committed runs use ``pca`` (100 x 30),
-``pcoa`` (100 x 30) and ``mds20`` (20 x 10). Without ``--tag`` the variant name
-is used, so repeated runs cannot silently overwrite a cited file.
+The two are not conflated: the permutation supplies the null p-value, the
+bootstrap supplies the confidence interval.
+
+Outputs:
+  results/sim_block_null_<tag>.csv
+  results/sim_block_null_summary_<tag>.csv
 
 Run:
-  python3 code/core/experiment_S_block_null.py --variant pca_pres --reps 100 --deletes 30 --tag pca
-  python3 code/core/experiment_S_block_null.py --variant pcoa_mds --reps 100 --deletes 30 --tag pcoa
-  python3 code/core/experiment_S_block_null.py --variant mds_pres --reps 20 --deletes 10 --tag mds20
+  python3 code/experiment_S_block_null.py --variant pca_pres --reps 100 --deletes 30 --tag pca
+  python3 code/experiment_S_block_null.py --variant pcoa_mds --reps 100 --deletes 30 --tag pcoa
+  python3 code/experiment_S_block_null.py --variant mds_pres --reps 20 --deletes 10 --tag mds20
 """
 from __future__ import annotations
 
@@ -34,18 +36,13 @@ import time
 
 import numpy as np
 
-import sys
-_CODE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ROOT = os.path.dirname(_CODE)
-for _sub in ("core", "data", "ees", "mds"):
-    _p = os.path.join(_CODE, _sub)
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "code"))
 RESULTS = os.path.join(ROOT, "results")
 SEED = 42
 
 from experiment_C1 import load, jac_dist  # noqa: E402
+from revision_layers import add_layer_args, layer_kwargs  # noqa: E402
 
 
 def si_fast(rho, drift):
@@ -101,21 +98,50 @@ def drift_for_labels(X, rho, groups, labels, variant):
     return np.concatenate(drifts), np.concatenate(rhos), np.concatenate(labs)
 
 
-def test_sdr(drift, rho, groups, rng, n_perm=199):
-    obs = si_fast(rho, drift)
-    null_row = np.empty(n_perm)
-    for b in range(n_perm):
-        null_row[b] = si_fast(rng.permutation(rho), drift)
-    p_row = float((np.sum(null_row >= obs) + 1) / (n_perm + 1))
+def sdr_inference(drift, rho, groups, rng, n_perm=199, n_boot=1000):
+    """Paper-weighted density permutation p-values + study-level bootstrap CI.
 
-    uniq = np.asarray(sorted(set(groups)))
+    Both the observed statistic and the permutation null use the paper-weighted
+    density ``prho[code]``. The row-weighted SDR is retained only descriptively
+    so the comparison is not the old row-observed/paper-null hybrid.
+    """
+    uniq = np.asarray(sorted(set(groups)), dtype=object)
     code = np.searchsorted(uniq, groups)
-    prho = np.asarray([rho[code == j].mean() for j in range(len(uniq))])
-    null_blk = np.empty(n_perm)
+    prho = np.array([rho[code == j].mean() for j in range(len(uniq))])
+    obs_paper = si_fast(prho[code], drift)
+    obs_row = si_fast(rho, drift)
+
+    # Inference: permute paper-level mean density across papers. The real rows
+    # and block composition stay fixed; observed and null are both paper-weighted.
+    null = np.empty(n_perm)
     for b in range(n_perm):
-        null_blk[b] = si_fast(rng.permutation(prho)[code], drift)
-    p_block = float((np.sum(null_blk >= obs) + 1) / (n_perm + 1))
-    return obs, p_row, p_block
+        null[b] = si_fast(rng.permutation(prho)[code], drift)
+    p_lower = float((np.sum(null <= obs_paper) + 1) / (n_perm + 1))
+    p_upper = float((np.sum(null >= obs_paper) + 1) / (n_perm + 1))
+    p_two = float(min(1.0, 2.0 * min(p_lower, p_upper)))
+
+    # Uncertainty: resample whole papers with replacement. The resampled rows
+    # get their own paper's mean density, so the bootstrap statistic is also
+    # paper-weighted. Duplicates are kept because this is a cluster bootstrap.
+    idx_by = {j: np.where(code == j)[0] for j in range(len(uniq))}
+    boot = np.empty(n_boot)
+    for b in range(n_boot):
+        pick = rng.integers(0, len(uniq), len(uniq))
+        idx = np.concatenate([idx_by[j] for j in pick])
+        rho_boot = np.concatenate([np.full(len(idx_by[j]), prho[j]) for j in pick])
+        boot[b] = si_fast(rho_boot, drift[idx])
+    lo, hi = np.quantile(boot, [0.025, 0.975])
+    return dict(
+        sdr=obs_paper,
+        sdr_row_descriptive=obs_row,
+        p_lower=p_lower,
+        p_two=p_two,
+        ci_lo=float(lo),
+        ci_hi=float(hi),
+        null_median=float(np.median(null)),
+        null_lo=float(np.quantile(null, 0.025)),
+        null_hi=float(np.quantile(null, 0.975)),
+    )
 
 
 def main():
@@ -125,77 +151,70 @@ def main():
     ap.add_argument("--reps", type=int, default=100)
     ap.add_argument("--deletes", type=int, default=30)
     ap.add_argument("--n-perm", type=int, default=199)
+    ap.add_argument("--n-boot", type=int, default=1000)
     ap.add_argument("--tag", default=None,
                     help="artifact tag; defaults to the variant name")
+    ap.add_argument("--exclude-papers", default="",
+                    help="comma-separated batch IDs to remove before the null")
+    ap.add_argument("--outdir", default=RESULTS,
+                    help="output directory (default: results)")
+    add_layer_args(ap)
     args = ap.parse_args()
     tag = args.tag or args.variant
+    os.makedirs(args.outdir, exist_ok=True)
 
-    X, rho, paper, params, *_ = load()
+    X, rho, paper, params, *_ = load(**layer_kwargs(args))
+    excluded = {p.strip() for p in args.exclude_papers.split(",") if p.strip()}
+    if excluded:
+        keep = ~np.isin(paper, sorted(excluded))
+        X, rho, paper = X[keep], rho[keep], np.asarray(paper)[keep]
+        print(f"excluded {sorted(excluded)}: {X.shape[0]} rows / {len(set(paper))} papers")
+    paper = np.asarray(paper)
     labels = np.asarray(sorted(set(paper)))
-    blocks = {p: np.where(paper == p)[0] for p in labels}
     rng = np.random.default_rng(SEED)
 
     rows = []
     t0 = time.time()
-
-    # observed: random subsets of real paper blocks
     for rep in range(args.reps):
         chosen = rng.choice(labels, size=min(args.deletes, len(labels)),
                             replace=False)
         d, r, g = drift_for_labels(X, rho, paper, chosen, args.variant)
-        obs, p_row, p_block = test_sdr(d, r, g, rng, args.n_perm)
-        rows.append(dict(variant=args.variant, arm="observed", rep=rep,
-                         sdr=round(obs, 4), p_row=round(p_row, 4),
-                         p_block=round(p_block, 4),
-                         rej_row=int(p_row < 0.05),
-                         rej_block=int(p_block < 0.05)))
-    obs_rows = [r for r in rows if r["arm"] == "observed"]
-    print(f"  observed: median SDR {np.median([r['sdr'] for r in obs_rows]):.3f} | "
-          f"row {np.mean([r['rej_row'] for r in obs_rows]):.3f} / "
-          f"paper {np.mean([r['rej_block'] for r in obs_rows]):.3f} | "
+        stats = sdr_inference(d, r, g, rng, args.n_perm, args.n_boot)
+        rows.append(dict(variant=args.variant, rep=rep, deletes=len(chosen),
+                         **stats))
+    print(f"  {args.variant}: median SDR {np.median([r['sdr'] for r in rows]):.3f} | "
+          f"p_lower {np.median([r['p_lower'] for r in rows]):.3f} | "
+          f"null {np.median([r['null_median'] for r in rows]):.3f} | "
           f"{time.time()-t0:.0f}s")
 
-    # null: permute whole block labels, then delete blocks
-    for rep in range(args.reps):
-        # each block gets a random label; the label set is unchanged
-        perm = rng.permutation(labels)
-        perm_groups = np.empty(len(paper), dtype=object)
-        for block_label, new_label in zip(labels, perm):
-            perm_groups[blocks[block_label]] = new_label
-        chosen = rng.choice(labels, size=min(args.deletes, len(labels)),
-                            replace=False)
-        d, r, g = drift_for_labels(X, rho, perm_groups, chosen, args.variant)
-        obs, p_row, p_block = test_sdr(d, r, g, rng, args.n_perm)
-        rows.append(dict(variant=args.variant, arm="block_null", rep=rep,
-                         sdr=round(obs, 4), p_row=round(p_row, 4),
-                         p_block=round(p_block, 4),
-                         rej_row=int(p_row < 0.05),
-                         rej_block=int(p_block < 0.05)))
-    null_rows = [r for r in rows if r["arm"] == "block_null"]
-    print(f"  block null: median SDR {np.median([r['sdr'] for r in null_rows]):.3f} | "
-          f"row {np.mean([r['rej_row'] for r in null_rows]):.3f} / "
-          f"paper {np.mean([r['rej_block'] for r in null_rows]):.3f} | "
-          f"{time.time()-t0:.0f}s")
-
-    out = os.path.join(RESULTS, f"sim_block_null_{tag}.csv")
+    out = os.path.join(args.outdir, f"sim_block_null_{tag}.csv")
     with open(out + ".tmp", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()))
         w.writeheader()
         w.writerows(rows)
     os.replace(out + ".tmp", out)
 
-    summary = os.path.join(RESULTS, f"sim_block_null_summary_{tag}.csv")
+    summary = os.path.join(args.outdir, f"sim_block_null_summary_{tag}.csv")
     with open(summary + ".tmp", "w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
-        w.writerow(["variant", "arm", "reps", "deletes", "median_sdr",
-                    "rej_row", "rej_block"])
-        for arm, sub in (("observed", obs_rows), ("block_null", null_rows)):
-            w.writerow([args.variant, arm, len(sub), args.deletes,
-                        round(float(np.median([r["sdr"] for r in sub])), 4),
-                        round(float(np.mean([r["rej_row"] for r in sub])), 4),
-                        round(float(np.mean([r["rej_block"] for r in sub])), 4)])
+        w.writerow(["variant", "reps", "deletes", "median_sdr",
+                    "median_sdr_row", "median_p_lower",
+                    "median_p_two", "median_ci_lo", "median_ci_hi",
+                    "median_null_sdr", "rej_lower_05", "rej_two_05"])
+        w.writerow([
+            args.variant, len(rows), args.deletes,
+            round(float(np.median([r["sdr"] for r in rows])), 4),
+            round(float(np.median([r["sdr_row_descriptive"] for r in rows])), 4),
+            round(float(np.median([r["p_lower"] for r in rows])), 4),
+            round(float(np.median([r["p_two"] for r in rows])), 4),
+            round(float(np.median([r["ci_lo"] for r in rows])), 4),
+            round(float(np.median([r["ci_hi"] for r in rows])), 4),
+            round(float(np.median([r["null_median"] for r in rows])), 4),
+            round(float(np.mean([r["p_lower"] < 0.05 for r in rows])), 4),
+            round(float(np.mean([r["p_two"] < 0.05 for r in rows])), 4),
+        ])
     os.replace(summary + ".tmp", summary)
-    print(f"[block-null] wrote {os.path.relpath(out, ROOT)} + "
+    print(f"[density-null] wrote {os.path.relpath(out, ROOT)} + "
           f"{os.path.relpath(summary, ROOT)}")
 
 
