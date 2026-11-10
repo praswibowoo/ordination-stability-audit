@@ -71,6 +71,13 @@ figures:
 	$(PY) code/figures/make_si_panels.py
 	$(PY) code/figures/make_fig7_replay.py
 
+curated:
+	$(PY) code/core/clean_primary_audit.py
+	$(PY) code/ees/row_count_sensitivity.py
+	$(PY) code/ees/p0_tie_aware_grade.py
+	$(PY) code/ees/p0_composition_percentile.py
+	$(PY) code/figures/make_fig_main_coverage.py
+
 mds:
 	$(PY) code/mds/mds_classical_check.py
 	$(PY) code/mds/mds_multistart_check.py

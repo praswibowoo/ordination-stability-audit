@@ -36,12 +36,12 @@ written to `results/` and `figures/`.
 | Drift, churn, SDR | `code/core/churn_corrected.py`, `pattern_churn.py`, `churn_frac_ci.py`, `sdr_paper_weighted.py`, `sdr_hierarchical.py` |
 | Rank and decisions | `code/core/decision_consequences.py`, `p2_3d_sdr.py`, `block_model_diagnostics.py` |
 | Calibration | `code/core/r1_anchor.py`, `r2_per_event_calibration.py`, `experiment_S_validation.py`, `experiment_S_power_extension.py`, `sim_random_drift_benchmark.py` |
-| EES sensitivities | `code/ees/ees_rev3_splits.py`, `preprocessing_sensitivity.py`, `preprocessing_block_factor.py`, `composition_matched_control.py`, `composition_formal_test.py`, `composition_vs_density.py`, `composition_exact_subset.py`, `wp3_composition_extra.py`, `coverage_paired_ratio_rules.py`, `study_level_aggregate.py`, `study_level_adjusted.py`, `joint_2d3d_ratio.py`, `presence_misclassification_sensitivity.py`, `extraction_confidence_sensitivity.py` |
+| EES sensitivities | `code/ees/ees_rev3_splits.py`, `preprocessing_sensitivity.py`, `preprocessing_block_factor.py`, `composition_matched_control.py`, `composition_formal_test.py`, `composition_vs_density.py`, `composition_exact_subset.py`, `wp3_composition_extra.py`, `coverage_paired_ratio_rules.py`, `row_count_sensitivity.py`, `p0_composition_percentile.py`, `p0_tie_aware_grade.py`, `study_level_aggregate.py`, `study_level_adjusted.py`, `joint_2d3d_ratio.py`, `presence_misclassification_sensitivity.py`, `extraction_confidence_sensitivity.py` |
 | Primary interaction | `code/core/block_interaction_primary.py` |
 | Density calibration | `code/core/observed_sigma_calibration.py`, `code/core/subset_sdr_calibration.py` |
 | Robustness | `code/core/robustness_duplicates.py`, `robustness_exclB175.py`, `robustness_weighting.py`, `rho_paper_bootstrap.py`, `radius_check.py`, `tie_order_sensitivity.py`, `dedup_scan.py` |
 | MDS diagnostics | `code/mds/mds_classical_check.py`, `mds_multistart_check.py`, `mds_stress.py`, `mds_seed_baseline.py`, `audit_mds_scope.py` |
-| Figures | `code/figures/make_fig1_coreport.py`, `make_fig2_print.py`, `make_fig8_block_effect.py`, `make_si_panels.py`, `make_fig7_replay.py` |
+| Figures | `code/figures/make_fig1_coreport.py`, `make_fig2_print.py`, `make_fig8_block_effect.py`, `make_fig_main_coverage.py`, `make_si_panels.py`, `make_fig7_replay.py` |
 
 Manuscript-only material — family/verdict legacy analyses, manuscript checks,
 table builders, PRISMA/corpus-funnel builders, `docs/`, `results/`, and
@@ -71,6 +71,7 @@ the Zenodo record; unpack it beside this repository, then run:
 python3 code/data/stage_layers.py   # place the data layers at the expected paths
 make all                       # stage layers + statistical self-test
 make core                      # full core analysis
+make curated                   # curated 716/117 audit, row-count and P0 sensitivities
 make figures                   # figures from the generated results
 make mds                       # MDS diagnostics
 ```
@@ -118,3 +119,16 @@ MIT. See `LICENSE`.
 If you use this code, cite the paper and this repository. A `CITATION.cff` is
 included. Author identifiers: P. Wibowo 0000-0002-2738-744X · C. Veesommai
 Sillberg 0000-0001-8400-7469.
+
+## P0 sensitivities (post-hoc, EES revision)
+
+`code/ees/p0_tie_aware_grade.py` and `code/ees/p0_composition_percentile.py`
+are the two post-hoc sensitivities added for the EES revision. `code/ees/row_count_sensitivity.py`
+is the row-count threshold sensitivity. They expect the manuscript
+`results/wp3_clean/` event tables produced by `code/core/clean_primary_audit.py`;
+`make curated` runs the curated audit and these sensitivities. Outputs are in
+`results/p0_*.csv` and `results/wp3_clean/row_count_sensitivity.csv`. The current
+main-text coverage figures are built by `code/figures/make_fig_main_coverage.py`;
+`code/ees/make_fig_percentile_ecdf.py` is a legacy two-panel ECDF alternative
+that is not used by the slim paper. `code/ees_revision_checks.py` is included
+because `code/core/clean_primary_audit.py` imports it.
