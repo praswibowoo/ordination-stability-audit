@@ -2,8 +2,8 @@
 
 Companion code for:
 
-> *Does deleting one study change a pooled ordination? A deletion audit of a
-> water-quality corpus.*
+> *Does deleting one study change a pooled coverage ordination? A water-quality
+> parameter-coverage audit.*
 
 This repository is the **code release** for the audit. It contains the reusable
 diagnostic, the core deletion-stability experiments, the EES sensitivity
@@ -72,6 +72,7 @@ python3 code/data/stage_layers.py   # place the data layers at the expected path
 make all                       # stage layers + statistical self-test
 make core                      # full core analysis
 make curated                   # curated 716/117 audit, row-count and P0 sensitivities
+make review-audit              # reproduce the review checks (requires make core + curated)
 make figures                   # figures from the generated results
 make mds                       # MDS diagnostics
 ```
@@ -131,4 +132,7 @@ is the row-count threshold sensitivity. They expect the manuscript
 main-text coverage figures are built by `code/figures/make_fig_main_coverage.py`;
 `code/ees/make_fig_percentile_ecdf.py` is a legacy two-panel ECDF alternative
 that is not used by the slim paper. `code/ees_revision_checks.py` is included
-because `code/core/clean_primary_audit.py` imports it.
+because `code/core/clean_primary_audit.py` imports it. `code/ees/audit_review_findings.py`
+reproduces the composition/density/row-count checks and writes
+`results/review_audit/review_findings.json` (run `make review-audit` after
+`make core` and `make curated`).

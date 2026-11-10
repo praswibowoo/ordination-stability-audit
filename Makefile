@@ -10,7 +10,7 @@
 
 PY ?= python3
 
-.PHONY: all stage-layers selftest core figures mds
+.PHONY: all stage-layers selftest core curated review-audit figures mds
 
 all: stage-layers selftest
 
@@ -77,6 +77,9 @@ curated:
 	$(PY) code/ees/p0_tie_aware_grade.py
 	$(PY) code/ees/p0_composition_percentile.py
 	$(PY) code/figures/make_fig_main_coverage.py
+
+review-audit:
+	$(PY) code/ees/audit_review_findings.py
 
 mds:
 	$(PY) code/mds/mds_classical_check.py

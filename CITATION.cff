@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use this code, cite the paper and this repository."
 title: "Ordination stability audit — core code"
 abstract: "Study-level deletion-stability audit for pooled ordinations: Procrustes drift, volume-matched controls, block-percentile and grade-stability metrics, and a curated primary-set audit that removes the known re-publication pair and single-row exceptions."
-version: 1.11.0
+version: 1.12.0
 date-released: "2026-11-10"
 license: MIT
 repository-code: "https://github.com/praswibowoo/ordination-stability-audit"
