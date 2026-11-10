@@ -31,7 +31,7 @@ for _sub in ("code", "code/core", "code/ees"):
 
 from composition_matched_control import cluster_boot_block  # noqa: E402
 from revision_layers import load_layers  # noqa: E402
-from clean_primary_audit import EXCLUDE  # noqa: E402
+EXCLUDE = ("B175", "B111", "B095", "B182", "B239")
 
 RESULTS = os.path.join(ROOT, "code", "results", "wp3_clean")
 if not os.path.exists(os.path.join(RESULTS, "coverage_events.csv")):
